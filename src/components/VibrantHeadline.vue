@@ -1,9 +1,11 @@
 <script setup lang="ts">
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import 'snapsvg-cjs'
 import { computed, onMounted, onUpdated, ref } from 'vue'
 
 const props = defineProps({
-  "class": {
+  class: {
     type: String,
   },
 })
@@ -32,7 +34,7 @@ const pSize = sMaxX
 const maxLines = 16
 const maxLinesDouble = maxLines * 2
 const lineStep = pSize / maxLines
-const lines: any[] = []
+const lines = []
 const pathDur = 100
 const delay = 50
 
@@ -40,9 +42,9 @@ const gLines = ref(null)
 const gText = ref(null)
 const maskElem = ref(null)
 
-let patt: any
-let maskObj: any
-let text: any
+let patt
+let maskObj
+let text
 
 const colorSteps = maxLines / 2
 const colors = [
@@ -196,12 +198,12 @@ const textObj = function () {
 
   const textGInit = s.value.g()
 
-  for (let i = 0; i < inputText.value.length; i++){
+  for (let i = 0; i < inputText.value.length; i++) {
     const word = inputText.value[i]
     const text = s.value.text('50%', `${0.1 * i * 100}%`, word)
 
     text.attr({
-      dy: `${ (0.35 + i * 0.25) * 100 }%`,
+      dy: `${(0.35 + i * 0.25) * 100}%`,
       'font-size': '0.5em',
     })
 
