@@ -17,9 +17,11 @@ interface LedStripStore {
 }
 
 export const useLedStripStore = defineStore('led-strip', () => {
+  const baseJsonApiUrl = `http://${window.location.hostname}:${window.location.port || '80'}/json`
+
   const settings = ref<LedStripStore>({
     brightness: 30,
-    jsonApiUrl: 'http://192.168.178.156/json',
+    jsonApiUrl: baseJsonApiUrl,
     drawingColor: '#FF0000',
     scale: 32,
     cols: 7,
@@ -72,15 +74,16 @@ export const useLedStripStore = defineStore('led-strip', () => {
     triggerSync()
   }
 
-  const autoUpdaterTimeout = ref<NodeJS.Timeout | null>(null)
+  const autoUpdaterTimeout = ref<number | null>(null)
   const isLoading = ref(false)
 
   const sendData = async () => {
     const transformedData = generateSerpentineData(
-      Object.values(pixelData.value)
-        .map((row) => Object.values(row))
-        .flat()
-        .map((color) => color.replace('#', '')),
+      (
+        Object.values(pixelData.value)
+          .map((row) => Object.values(row))
+          .flat() as string[]
+      ).map((color: string) => color.replace('#', '')),
     )
 
     const payload = {
@@ -94,7 +97,7 @@ export const useLedStripStore = defineStore('led-strip', () => {
 
     isLoading.value = true
 
-    await fetch(jsonApiUrl.value, {
+    await fetch(settings.value.jsonApiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -112,7 +115,7 @@ export const useLedStripStore = defineStore('led-strip', () => {
 
     autoUpdaterTimeout.value = setTimeout(() => {
       sendData()
-    }, 150)
+    }, 150) as unknown as number
   }
 
   onMounted(() => {
@@ -128,6 +131,7 @@ export const useLedStripStore = defineStore('led-strip', () => {
   })
 
   return {
+    isLoading,
     settings,
     setPixel,
     pixelData,
