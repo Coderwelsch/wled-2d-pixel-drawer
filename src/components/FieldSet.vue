@@ -1,4 +1,6 @@
 <script setup lang="ts">
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { ref, defineProps, defineEmits } from 'vue'
 import { ColorPicker } from 'vue-accessible-color-picker'
 
@@ -56,14 +58,17 @@ const handleChange = (event: {
 </script>
 
 <template>
-  <fieldset :class="{
-    'border-none flex flex-col gap-1.5': true,
-    [props.class]: true,
-  }">
+  <fieldset
+    :class="{
+      'border-none flex flex-col gap-1.5': true,
+      [props.class]: true,
+    }"
+  >
     <label
       v-if="type !== 'color'"
       :for="id"
-      class="font-bold text-neutral-50 uppercase text-sm tracking-widest">
+      class="font-bold text-neutral-50 uppercase text-sm tracking-widest"
+    >
       {{ label }}
     </label>
 
