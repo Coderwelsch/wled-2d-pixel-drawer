@@ -46,12 +46,12 @@ const COLOR_PRESETS = [
 
     <div class="flex flex-col gap-6">
       <FieldSet
-        id="jsonApiUrl"
-        :value="ledStripStore.settings.jsonApiUrl"
-        label="JSON API URL"
+        id="webSocketUrl"
+        :value="ledStripStore.settings.websocketUrl"
+        label="Connection"
         type="text"
         class="font-mono"
-        @change="(value) => (ledStripStore.settings.jsonApiUrl = value)"
+        @change="(value) => (ledStripStore.settings.websocketUrl = value)"
       />
 
       <FieldSet
