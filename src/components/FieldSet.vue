@@ -86,10 +86,11 @@ const handleChange = (event: {
         [inputStyles[type]]: true,
       }"
     />
+
     <ColorPicker
       v-if="type === 'color'"
       alpha-channel="hide"
-      :color="inputValue as string"
+      :color="value + 'ff'"
       @color-change="
         (event) => {
           const hexWithoutAlpha = event.colors.hex.slice(0, -2)
