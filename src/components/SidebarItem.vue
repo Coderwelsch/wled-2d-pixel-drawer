@@ -70,7 +70,10 @@ const COLOR_PRESETS = [
             v-for="preset in COLOR_PRESETS"
             :key="preset.color"
             @click="ledStripStore.settings.drawingColor = preset.color"
-            class="w-6 h-6 border border-neutral-500 rounded-md cursor-pointer"
+            :class="{
+              'w-6 h-6 border-1 border-neutral rounded-md cursor-pointer': true,
+              'border-blue-500': preset.color === ledStripStore.settings.drawingColor,
+            }"
             :style="{
               backgroundColor: preset.color,
             }"
