@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import { ref, defineProps, defineEmits } from 'vue'
 import { ColorPicker } from 'vue-accessible-color-picker'
 
@@ -8,7 +6,7 @@ const baseStyles =
   'border-none rounded-lg p-2 outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50'
 
 const inputStyles: Record<'text' | string, string> = {
-  text: 'bg-neutral-100/10 focus:bg-neutral-100/20',
+  text: 'bg-neutral-100/10 focus:bg-neutral-100/20 text-neutral-50',
 }
 
 const props = defineProps({
@@ -67,7 +65,7 @@ const handleChange = (event: {
     <label
       v-if="type !== 'color'"
       :for="id"
-      class="font-bold text-neutral-50 uppercase text-sm tracking-widest"
+      class="font-bold text-neutral-400 uppercase text-sm tracking-widest"
     >
       {{ label }}
     </label>
