@@ -1,18 +1,18 @@
 export const setLocalStorage = <Type>(key: string, value: Type) => {
-  localStorage.setItem(key, JSON.stringify(value))
+	localStorage.setItem(key, JSON.stringify(value))
 }
 
 export const getLocalStorage = <Type>(key: string, defaultValue: Type): Type => {
-  const value = localStorage.getItem(key)
+	const value = localStorage.getItem(key)
 
-  if (!value) {
-    return defaultValue
-  }
+	if (!value) {
+		return defaultValue
+	}
 
-  const parsedValue = JSON.parse(value)
+	const parsedValue = JSON.parse(value)
 
-  return {
-    ...defaultValue,
-    ...parsedValue,
-  }
+	return {
+		...defaultValue,
+		...parsedValue,
+	}
 }
