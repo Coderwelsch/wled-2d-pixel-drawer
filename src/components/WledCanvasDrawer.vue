@@ -84,14 +84,9 @@ const handleDrawing = (event: MouseEvent | TouchEvent) => {
 }
 
 const clearCanvas = () => {
-  if (context.value) {
+  if (context.value && canvasRef.value) {
     context.value.fillStyle = '#000000'
-    context.value.fillRect(
-      0,
-      0,
-      ledStripStore.settings.cols * scaleFactor.value,
-      ledStripStore.settings.rows * scaleFactor.value,
-    )
+    context.value.fillRect(0, 0, canvasRef.value.width, canvasRef.value.height)
   }
 }
 
@@ -115,6 +110,8 @@ const drawGridLines = () => {
       context.value.stroke()
       context.value.closePath()
     }
+  } else {
+    console.error('Context not found')
   }
 }
 
