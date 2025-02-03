@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLedStripStore } from '@/stores/led-strip.ts'
-import { computed, onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const ledStripStore = useLedStripStore()
 
@@ -29,6 +29,7 @@ const startDrawing = () => {
 
 const drawPixelGrid = () => {
   if (!context.value) {
+    console.error('Context not found')
     return
   }
 
@@ -47,10 +48,36 @@ const drawPixelGrid = () => {
   }
 }
 
-const handleDrawing = (event: MouseEvent) => {
+const handleDrawing = (event: MouseEvent | TouchEvent) => {
+  if (!canvasRef.value) {
+    console.error('Canvas not found')
+    return
+  }
+
+  let offsetX = 0
+  let offsetY = 0
+
+  const isTouch = 'TouchEvent' in window && event instanceof window.TouchEvent
+
+  if (isTouch) {
+    event.preventDefault()
+
+    if (event.touches.length > 1) {
+      return
+    }
+
+    const touch = event.touches[0]
+
+    offsetX = touch.clientX - canvasRef.value.getBoundingClientRect().left
+    offsetY = touch.clientY - canvasRef.value.getBoundingClientRect().top
+  } else {
+    offsetX = (event as MouseEvent).offsetX
+    offsetY = (event as MouseEvent).offsetY
+  }
+
   if (isDrawing.value && context.value) {
-    const x = Math.floor(event.offsetX / scaleFactor.value)
-    const y = Math.floor(event.offsetY / scaleFactor.value)
+    const x = Math.floor(offsetX / scaleFactor.value)
+    const y = Math.floor(offsetY / scaleFactor.value)
 
     ledStripStore.setPixel(x, y)
   }
@@ -135,6 +162,11 @@ onMounted(() => {
     canvasRef.value.addEventListener('mouseup', stopDrawing)
     canvasRef.value.addEventListener('mouseleave', stopDrawing)
 
+    // mobile events
+    canvasRef.value.addEventListener('touchstart', startDrawing)
+    canvasRef.value.addEventListener('touchmove', handleDrawing)
+    canvasRef.value.addEventListener('touchend', stopDrawing)
+
     context.value = canvasRef.value.getContext('2d')
 
     clearCanvas()
@@ -158,7 +190,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex flex-row justify-center items-center gap-4 py-8 w-full h-full" ref="containerRef">
+  <div
+    class="flex flex-row justify-center items-center gap-4 py-8 w-full h-full"
+    ref="containerRef"
+  >
     <canvas
       ref="canvasRef"
       id="canvas"
