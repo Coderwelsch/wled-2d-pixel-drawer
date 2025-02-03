@@ -103,21 +103,17 @@ const drawGridLines = () => {
     for (let x = 0; x <= ledStripStore.settings.cols; x++) {
       context.value.beginPath()
       context.value.moveTo(x * scaleFactor.value, 0)
-      context.value.lineTo(
-        x * scaleFactor.value,
-        ledStripStore.settings.rows * scaleFactor.value,
-      )
+      context.value.lineTo(x * scaleFactor.value, ledStripStore.settings.rows * scaleFactor.value)
       context.value.stroke()
+      context.value.closePath()
     }
 
     for (let y = 0; y <= ledStripStore.settings.rows; y++) {
       context.value.beginPath()
       context.value.moveTo(0, y * scaleFactor.value)
-      context.value.lineTo(
-        ledStripStore.settings.cols * scaleFactor.value,
-        y * scaleFactor.value,
-      )
+      context.value.lineTo(ledStripStore.settings.cols * scaleFactor.value, y * scaleFactor.value)
       context.value.stroke()
+      context.value.closePath()
     }
   }
 }
