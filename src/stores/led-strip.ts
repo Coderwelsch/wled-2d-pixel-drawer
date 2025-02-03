@@ -1,8 +1,7 @@
 import { generateSerpentineData } from '@/lib/generate-serpentine-data.ts'
 import { getLocalStorage, setLocalStorage } from '@/lib/local-storage.ts'
-import { useWebSocket } from '@/lib/web-socket.ts'
 import { defineStore } from 'pinia'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useToast } from 'vue-toast-notification'
 
 export interface GridPixelData {
@@ -16,7 +15,7 @@ interface LedStripStore {
   cols: number
   rows: number
   brightness: number
-  websocketUrl: string
+  hostname: string
   drawingColor: string
 }
 
@@ -24,11 +23,9 @@ const SETTINGS_STORAGE_KEY = 'led-strip-settings'
 const PIXEL_DATA_STORAGE_KEY = 'led-strip-pixel-data'
 
 export const useLedStripStore = defineStore('led-strip', () => {
-  const baseWebSocketUrl = `ws://${window.location.hostname}:${window.location.port || '80'}/ws`
-
   const localStorageSettings = getLocalStorage<LedStripStore>(SETTINGS_STORAGE_KEY, {
     brightness: 30,
-    websocketUrl: baseWebSocketUrl,
+    hostname: window.location.hostname,
     drawingColor: '#FF0000',
     scale: 32,
     cols: 30,
@@ -39,10 +36,7 @@ export const useLedStripStore = defineStore('led-strip', () => {
   const settings = ref<LedStripStore>(localStorageSettings)
   const pixelData = ref<GridPixelData>(localStoragePixelData)
 
-  const { ws: websocket, state: wsState } = useWebSocket({
-    url: settings.value.websocketUrl,
-    reconnect: true,
-  })
+  const isLoading = ref(false)
   const startTime = ref(performance.now())
 
   const toast = useToast()
@@ -75,13 +69,14 @@ export const useLedStripStore = defineStore('led-strip', () => {
   }
 
   const autoUpdaterTimeout = ref<number | null>(null)
-  const isLoading = ref(false)
 
   const sendData = async () => {
-    if (wsState.value !== 'OPEN') {
-      console.error('WebSocket not initialized')
+    if (isLoading.value) {
+      console.log('Json Api busy', isLoading.value)
       return
     }
+
+    const apiUrl = `http://${settings.value.hostname}/json`
 
     const flatData = (
       Object.values(pixelData.value)
@@ -107,11 +102,22 @@ export const useLedStripStore = defineStore('led-strip', () => {
     }
 
     startTime.value = performance.now()
-    websocket.value!.send(JSON.stringify(payload))
+    isLoading.value = true
 
-    // calculate size of data
-    const size = new Blob([JSON.stringify(payload)]).size
-    console.log(`Data sent to server: ${size} bytes`)
+    await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => response.json())
+      .finally(() => {
+        isLoading.value = false
+
+        const size = new Blob([JSON.stringify(payload)]).size
+        console.log(`Data ${size} sent to server in ${performance.now() - startTime.value}ms`)
+      })
   }
 
   const triggerSync = () => {
@@ -130,12 +136,6 @@ export const useLedStripStore = defineStore('led-strip', () => {
 
   onMounted(() => {
     reset()
-  })
-
-  onBeforeUnmount(() => {
-    if (websocket.value) {
-      websocket.value.close()
-    }
   })
 
   watch(settings.value, () => {
