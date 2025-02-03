@@ -1,8 +1,8 @@
 import { generateSerpentineData } from '@/lib/generate-serpentine-data.ts'
 import { getLocalStorage, setLocalStorage } from '@/lib/local-storage.ts'
 import { useWebSocket } from '@/lib/web-socket.ts'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useToast } from 'vue-toast-notification'
 
 export interface GridPixelData {
@@ -24,22 +24,25 @@ const SETTINGS_STORAGE_KEY = 'led-strip-settings'
 const PIXEL_DATA_STORAGE_KEY = 'led-strip-pixel-data'
 
 export const useLedStripStore = defineStore('led-strip', () => {
-  const baseWebSocketUrl = `http://${window.location.hostname}:${window.location.port || '80'}`
+  const baseWebSocketUrl = `ws://${window.location.hostname}:${window.location.port || '80'}/ws`
 
   const localStorageSettings = getLocalStorage<LedStripStore>(SETTINGS_STORAGE_KEY, {
     brightness: 30,
     websocketUrl: baseWebSocketUrl,
     drawingColor: '#FF0000',
     scale: 32,
-    cols: 7,
-    rows: 12,
+    cols: 30,
+    rows: 30,
   })
 
   const localStoragePixelData = getLocalStorage<GridPixelData>(PIXEL_DATA_STORAGE_KEY, {})
   const settings = ref<LedStripStore>(localStorageSettings)
   const pixelData = ref<GridPixelData>(localStoragePixelData)
 
-  const { ws: websocket } = useWebSocket(settings.value.websocketUrl, true)
+  const { ws: websocket, state: wsState } = useWebSocket({
+    url: settings.value.websocketUrl,
+    reconnect: true,
+  })
   const startTime = ref(performance.now())
 
   const toast = useToast()
@@ -75,7 +78,7 @@ export const useLedStripStore = defineStore('led-strip', () => {
   const isLoading = ref(false)
 
   const sendData = async () => {
-    if (!websocket.value || websocket.value.readyState !== WebSocket.OPEN) {
+    if (wsState.value !== 'OPEN') {
       console.error('WebSocket not initialized')
       return
     }
@@ -97,14 +100,14 @@ export const useLedStripStore = defineStore('led-strip', () => {
       bri: settings.value.brightness,
       len: settings.value.cols * settings.value.rows,
       seg: {
-        // TODO: remove
-        i: transformedData.slice(0, 40),
+        // TODO: causes {error: 9} issues when payload is too big
+        // jumping back to old json api?
+        i: transformedData,
       },
     }
 
-    isLoading.value = true
     startTime.value = performance.now()
-    websocket.value.send(JSON.stringify(payload))
+    websocket.value!.send(JSON.stringify(payload))
 
     // calculate size of data
     const size = new Blob([JSON.stringify(payload)]).size
@@ -125,52 +128,8 @@ export const useLedStripStore = defineStore('led-strip', () => {
     }
   }
 
-  const initWebSocket = () => {
-    const hostname = settings.value.websocketUrl.replace('http://', '').replace('https://', '')
-
-    websocket.value = new WebSocket(`ws://${hostname}/ws`)
-
-    websocket.value.onopen = () => {
-      console.log('WebSocket Opened')
-    }
-
-    websocket.value.onmessage = (event) => {
-      isLoading.value = false
-
-      const data = JSON.parse(event.data)
-
-      if (data.error) {
-        toast.error(`Error: ${data.error}`, {
-          position: 'top',
-        })
-      }
-
-      console.log('Time taken to send data:', performance.now() - startTime.value)
-    }
-
-    websocket.value.onerror = (error) => {
-      isLoading.value = false
-
-      console.error('WebSocket Error:', error)
-      toast.error('WebSocket connection error. Reconnecting …', {
-        position: 'top',
-      })
-    }
-
-    websocket.value.onclose = () => {
-      isLoading.value = false
-
-      console.log('WebSocket Closed')
-
-      toast.error('WebSocket connection closed. Reconnecting …', {
-        position: 'top',
-      })
-    }
-  }
-
   onMounted(() => {
     reset()
-    initWebSocket()
   })
 
   onBeforeUnmount(() => {
