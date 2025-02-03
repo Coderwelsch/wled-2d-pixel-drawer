@@ -1,5 +1,3 @@
-// vuejs 3 websocket use hook
-
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 
 export function useWebSocket({ url, reconnect = true }: { url: string; reconnect?: boolean }) {
