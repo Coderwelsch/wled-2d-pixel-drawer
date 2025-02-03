@@ -139,11 +139,13 @@ const resizeCanvasToFitView = () => {
   }
 }
 
-watch(ledStripStore, () => {
+const draw = () => {
   clearCanvas()
   drawPixelGrid()
   drawGridLines()
-})
+
+  requestAnimationFrame(draw)
+}
 
 onMounted(() => {
   if (containerRef.value) {
@@ -165,9 +167,10 @@ onMounted(() => {
 
     context.value = canvasRef.value.getContext('2d')
 
-    clearCanvas()
-    drawPixelGrid()
-    drawGridLines()
+    // init render loop
+    draw()
+  } else {
+    console.error('Canvas not found')
   }
 })
 
