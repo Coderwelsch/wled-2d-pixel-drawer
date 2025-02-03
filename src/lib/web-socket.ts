@@ -2,8 +2,10 @@
 
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 
-export function useWebSocket(url: string, reconnect = true) {
+export function useWebSocket({ url, reconnect = true }: { url: string; reconnect?: boolean }) {
   const ws = ref<WebSocket | null>(null)
+  const websocketUrl = ref(url)
+
   const connectionState = ref<'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED'>('CONNECTING')
 
   const close = () => {
@@ -15,10 +17,10 @@ export function useWebSocket(url: string, reconnect = true) {
   }
 
   const connect = () => {
-    ws.value = new WebSocket(url)
+    ws.value = new WebSocket(websocketUrl.value)
     connectionState.value = 'CONNECTING'
 
-    console.log('WebSocket connecting to', url)
+    console.log('WebSocket connecting to', websocketUrl.value)
 
     ws.value.onopen = () => {
       connectionState.value = 'OPEN'
