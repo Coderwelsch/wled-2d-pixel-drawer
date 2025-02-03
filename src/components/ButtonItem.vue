@@ -1,6 +1,8 @@
 <template>
 	<button
 		:class="{
+			// dirty way to merge classes
+			[props.class || '']: !!props.class,
 			[baseClasses]: true,
 			[sizeClasses[props.size]]: true,
 			[variantClasses[props.variant]]: true,
@@ -31,6 +33,7 @@ const variantClasses = {
 }
 
 interface ButtonProps {
+	class?: string
 	type: string
 	variant: keyof typeof variantClasses
 	size: keyof typeof sizeClasses
