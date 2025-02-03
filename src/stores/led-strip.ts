@@ -95,8 +95,6 @@ export const useLedStripStore = defineStore('led-strip', () => {
       bri: settings.value.brightness,
       len: settings.value.cols * settings.value.rows,
       seg: {
-        // TODO: causes {error: 9} issues when payload is too big
-        // jumping back to old json api?
         i: transformedData,
       },
     }
