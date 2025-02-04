@@ -2,7 +2,8 @@
 import { ref, defineProps, defineEmits } from "vue"
 import { ColorPicker } from "vue-accessible-color-picker"
 
-const baseStyles = "border-none rounded-lg p-2 outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+const baseStyles =
+	"border-none text-neutral-50 rounded-lg p-2 outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
 
 const inputStyles: Record<"text" | string, string> = {
 	text: "bg-neutral-100/10 focus:bg-neutral-100/20 text-neutral-50",
@@ -32,6 +33,10 @@ const props = defineProps({
 	max: {
 		type: [String, Number],
 		default: 100,
+	},
+	readOnly: {
+		type: Boolean,
+		default: false,
 	},
 	class: {
 		type: String,
@@ -72,6 +77,7 @@ const handleChange = (event: {
 			:type="type"
 			:min="min"
 			:max="max"
+			:readonly="readOnly"
 			@change="handleChange"
 			@input="handleChange"
 			:class="{
@@ -115,10 +121,9 @@ const handleChange = (event: {
 
 .vacp-color-picker {
 	width: 100%;
-}
-
-.vacp-color-picker {
 	padding: 0;
+
+	color: var(--color-neutral-400);
 }
 
 .vacp-range-input-label.vacp-range-input-label--alpha,
