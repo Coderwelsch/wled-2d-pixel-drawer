@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ButtonItem from "@/components/ButtonItem.vue"
+import ColorItem from "@/components/ColorItem.vue"
 import FieldSet from "@/components/FieldSet.vue"
 import VibrantHeadline from "@/components/VibrantHeadline.vue"
 import { COLOR_PRESETS } from "@/lib/constants.ts"
@@ -10,7 +11,7 @@ const ledStripStore = useLedStripStore()
 </script>
 
 <template>
-	<div class="flex h-auto flex-col gap-12 overflow-y-scroll bg-neutral-800 p-6">
+	<div class="flex flex-col gap-12 p-6 md:h-auto md:overflow-y-scroll md:bg-neutral-800">
 		<div class="flex w-full max-w-md flex-col items-center justify-center text-center">
 			<VibrantHeadline class="mx-auto h-40 w-full max-w-xs">PIXEL DIS/PLAY</VibrantHeadline>
 
@@ -41,22 +42,23 @@ const ledStripStore = useLedStripStore()
 
 			<div class="flex flex-col items-center justify-center gap-2">
 				<div class="flex w-full flex-row flex-wrap gap-2">
-					<div
+					<!-- current color -->
+					<ColorItem
+						:color="ledStripStore.settings.drawingColor"
+						:name="ledStripStore.settings.drawingColor"
+						active
+					/>
+
+					<ColorItem
 						v-for="preset in COLOR_PRESETS"
 						:key="preset.color"
-						@click="ledStripStore.settings.drawingColor = preset.color"
-						:class="{
-							'border-neutral h-6 w-6 cursor-pointer rounded-md border-1': true,
-							'border-blue-500': preset.color === ledStripStore.settings.drawingColor,
-						}"
-						:style="{
-							backgroundColor: preset.color,
-						}"
-					></div>
+						:color="preset.color"
+						:name="preset.name"
+					/>
 				</div>
 
 				<FieldSet
-					class="w-full"
+					class="hidden w-full md:block"
 					id="color"
 					:value="ledStripStore.settings.drawingColor"
 					@change="(value) => (ledStripStore.settings.drawingColor = value)"
@@ -66,6 +68,8 @@ const ledStripStore = useLedStripStore()
 			</div>
 		</div>
 
-		<ButtonItem type="button" variant="danger" size="md" @click="ledStripStore.reset()">Clear </ButtonItem>
+		<ButtonItem class="hidden md:flex" type="button" variant="danger" size="md" @click="ledStripStore.reset()">
+			Clear
+		</ButtonItem>
 	</div>
 </template>
