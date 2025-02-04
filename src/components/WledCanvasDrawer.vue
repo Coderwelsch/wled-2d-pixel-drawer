@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import ButtonItem from "@/components/ButtonItem.vue"
 import ColorItem from "@/components/ColorItem.vue"
+import FieldSet from "@/components/FieldSet.vue"
+import IconTrashBinSharp from "@/components/icons/IconTrashBinSharp.vue"
 import { COLOR_PRESETS } from "@/lib/constants.ts"
 import { useLedStripStore } from "@/stores/led-strip.ts"
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
@@ -184,15 +187,31 @@ onBeforeUnmount(() => {
 
 <template>
 	<div class="flex w-full flex-col items-center justify-center gap-4 md:h-full" ref="containerRef">
-		<div class="flex w-full flex-row flex-wrap gap-2">
-			<!-- current color -->
-			<ColorItem
-				:color="ledStripStore.settings.drawingColor"
-				:name="ledStripStore.settings.drawingColor"
-				active
+		<div class="py-2 md:hidden">
+			<FieldSet
+				class="w-full"
+				id="color"
+				:value="ledStripStore.settings.drawingColor"
+				label="Color"
+				type="color"
+				@change="(value) => (ledStripStore.settings.drawingColor = value)"
 			/>
 
-			<ColorItem v-for="preset in COLOR_PRESETS" :key="preset.color" :color="preset.color" :name="preset.name" />
+			<div class="flex w-full flex-row flex-wrap gap-2">
+				<!-- current color -->
+				<ColorItem
+					:color="ledStripStore.settings.drawingColor"
+					:name="ledStripStore.settings.drawingColor"
+					active
+				/>
+
+				<ColorItem
+					v-for="preset in COLOR_PRESETS"
+					:key="preset.color"
+					:color="preset.color"
+					:name="preset.name"
+				/>
+			</div>
 		</div>
 
 		<canvas
@@ -200,11 +219,18 @@ onBeforeUnmount(() => {
 			id="canvas"
 			:width="ledStripStore.settings.cols * scaleFactor"
 			:height="ledStripStore.settings.rows * scaleFactor"
-			class="border border-black bg-black"
+			class="border border-neutral-500 bg-black"
 			:style="{
 				width: ledStripStore.settings.cols * scaleFactor + 'px',
 				height: ledStripStore.settings.rows * scaleFactor + 'px',
 			}"
 		/>
+
+		<ButtonItem class="md:hidden" type="button" variant="danger" size="md" @click="ledStripStore.reset()">
+			<slot name="iconBefore">
+				<IconTrashBinSharp class="h-4 w-4" />
+			</slot>
+			<slot name="default">Clear</slot>
+		</ButtonItem>
 	</div>
 </template>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MobileActionsBar from "@/components/MobileActionsBar.vue"
 import SidebarItem from "@/components/SidebarItem.vue"
 import WledCanvasDrawer from "@/components/WledCanvasDrawer.vue"
 </script>
@@ -11,7 +10,5 @@ import WledCanvasDrawer from "@/components/WledCanvasDrawer.vue"
 		</div>
 
 		<SidebarItem />
-
-		<MobileActionsBar />
 	</div>
 </template>
