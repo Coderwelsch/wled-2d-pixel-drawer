@@ -36,10 +36,7 @@ const COLOR_PRESETS = [
 		<div class="flex w-full max-w-md flex-col items-center justify-center text-center">
 			<VibrantHeadline class="mx-auto h-40 w-full max-w-xs">PIXEL DIS/PLAY</VibrantHeadline>
 
-			<p class="text-md">
-				Use this tool to draw on the led display. Click on the canvas to draw pixels. Use the send button to
-				send the data to the LED display.
-			</p>
+			<p class="text-md text-neutral-200">Write something on the canvas and see it displayed on the LED strip.</p>
 		</div>
 
 		<hr />
