@@ -181,7 +181,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div class="flex h-full w-full flex-row items-center justify-center gap-4 py-8" ref="containerRef">
+	<div class="flex w-full flex-row items-center justify-center gap-4 md:h-full" ref="containerRef">
 		<canvas
 			ref="canvasRef"
 			id="canvas"
