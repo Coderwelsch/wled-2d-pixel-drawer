@@ -1,3 +1,4 @@
+import { DEFAULT_BRIGHTNESS, DEFAULT_COLS, DEFAULT_HOSTNAME, DEFAULT_ROWS } from "@/lib/constants.ts"
 import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
 import { getLocalStorage, setLocalStorage } from "@/lib/local-storage.ts"
 import { defineStore } from "pinia"
@@ -24,12 +25,12 @@ const PIXEL_DATA_STORAGE_KEY = "led-strip-pixel-data"
 
 export const useLedStripStore = defineStore("led-strip", () => {
 	const localStorageSettings = getLocalStorage<LedStripStore>(SETTINGS_STORAGE_KEY, {
-		brightness: 30,
-		hostname: window.location.hostname,
+		brightness: DEFAULT_BRIGHTNESS,
+		hostname: DEFAULT_HOSTNAME,
 		drawingColor: "#FF0000",
 		scale: 32,
-		cols: 30,
-		rows: 30,
+		cols: DEFAULT_COLS,
+		rows: DEFAULT_ROWS,
 	})
 
 	const localStoragePixelData = getLocalStorage<GridPixelData>(PIXEL_DATA_STORAGE_KEY, {})
