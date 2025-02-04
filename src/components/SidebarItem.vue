@@ -13,7 +13,7 @@ const ledStripStore = useLedStripStore()
 
 <template>
 	<div class="flex flex-col gap-12 p-6 md:h-auto md:overflow-y-scroll md:bg-neutral-800">
-		<div class="flex w-full max-w-md flex-col items-center justify-center text-center">
+		<div class="mx-auto flex w-full max-w-md flex-col items-center justify-center text-center">
 			<VibrantHeadline class="mx-auto h-40 w-full max-w-xs">PIXEL DIS/PLAY</VibrantHeadline>
 
 			<p class="text-md text-neutral-200">Write something on the canvas and see it displayed on the LED strip.</p>
