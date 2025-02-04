@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ColorItem from "@/components/ColorItem.vue"
+import { COLOR_PRESETS } from "@/lib/constants.ts"
 import { useLedStripStore } from "@/stores/led-strip.ts"
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 
@@ -16,8 +18,8 @@ const scaleFactor = computed(() => {
 	}
 
 	return Math.min(
-		containerRef.value?.clientWidth / ledStripStore.settings.cols,
-		containerRef.value?.clientHeight / ledStripStore.settings.rows,
+		containerRef.value.clientWidth / ledStripStore.settings.cols,
+		containerRef.value.clientHeight / ledStripStore.settings.rows,
 	)
 })
 
@@ -181,7 +183,18 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div class="flex w-full flex-row items-center justify-center gap-4 md:h-full" ref="containerRef">
+	<div class="flex w-full flex-col items-center justify-center gap-4 md:h-full" ref="containerRef">
+		<div class="flex w-full flex-row flex-wrap gap-2">
+			<!-- current color -->
+			<ColorItem
+				:color="ledStripStore.settings.drawingColor"
+				:name="ledStripStore.settings.drawingColor"
+				active
+			/>
+
+			<ColorItem v-for="preset in COLOR_PRESETS" :key="preset.color" :color="preset.color" :name="preset.name" />
+		</div>
+
 		<canvas
 			ref="canvasRef"
 			id="canvas"
