@@ -11,7 +11,15 @@
 		:disabled="disabled"
 		@click="handleClick"
 	>
-		<slot />
+		<span v-if="Boolean(slots.iconBefore)">
+			<slot name="iconBefore" class="h-4 w-4" />
+		</span>
+
+		<slot name="default" />
+
+		<span v-if="Boolean(slots.iconAfter)">
+			<slot name="iconAfter" class="h-4 w-4" />
+		</span>
 	</button>
 </template>
 
@@ -19,16 +27,17 @@
 import { defineEmits, defineProps } from "vue"
 
 const baseClasses =
-	"inline-flex items-center justify-center focus:outline-none transition ease-in-out duration-150 rounded-lg font-bold cursor-pointer"
+	"flex items-center justify-center gap-1 focus:outline-none transition ease-in-out duration-150 rounded-lg font-bold cursor-pointer"
 
 const sizeClasses = {
 	sm: "px-2.5 py-1.5 text-xs",
-	md: "px-4 py-2 text-sm",
-	lg: "yxpx-6 py-3 text-lg",
+	md: "px-3 py-2 text-sm",
+	lg: "px-6 py-3 text-lg",
 }
 const variantClasses = {
 	primary: "bg-blue-500 text-white hover:bg-blue-600",
 	secondary: "bg-gray-500 text-white hover:bg-gray-600",
+	minimal: "bg-transparent text-gray-200 hover:text-gray-400",
 	danger: "bg-red-500 text-white hover:bg-red-600",
 }
 
@@ -41,6 +50,12 @@ interface ButtonProps {
 }
 
 const props = defineProps<ButtonProps>()
+
+const slots = defineSlots<{
+	default: void
+	iconBefore: void
+	iconAfter: void
+}>()
 
 const emit = defineEmits<{
 	(e: "click", event: Event): void
