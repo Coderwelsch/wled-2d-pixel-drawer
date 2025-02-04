@@ -19,8 +19,24 @@ export const COLOR_PRESETS = [
 		name: "Red",
 	},
 	{
+		color: "#FFA500",
+		name: "Orange",
+	},
+	{
+		color: "#FFFF00",
+		name: "Yellow",
+	},
+	{
+		color: "#FF00FF",
+		name: "Magenta",
+	},
+	{
 		color: "#00FF00",
 		name: "Green",
+	},
+	{
+		color: "#00FFFF",
+		name: "Cyan",
 	},
 	{
 		color: "#0000FF",
