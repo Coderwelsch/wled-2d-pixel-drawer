@@ -3,7 +3,8 @@ import ButtonItem from "@/components/ButtonItem.vue"
 import ColorItem from "@/components/ColorItem.vue"
 import FieldSet from "@/components/FieldSet.vue"
 import VibrantHeadline from "@/components/VibrantHeadline.vue"
-import { COLOR_PRESETS } from "@/lib/constants.ts"
+import { classNames } from "@/lib/class-names.ts"
+import { COLOR_PRESETS, DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE } from "@/lib/constants.ts"
 
 import { useLedStripStore } from "@/stores/led-strip.ts"
 
@@ -18,10 +19,16 @@ const ledStripStore = useLedStripStore()
 			<p class="text-md text-neutral-200">Write something on the canvas and see it displayed on the LED strip.</p>
 		</div>
 
-		<hr />
-
-		<div class="flex flex-col gap-6">
+		<div
+			:class="
+				classNames(
+					'flex flex-col gap-6',
+					DISABLE_HOSTNAME_CHANGE && DISABLE_BRIGHTNESS_CHANGE ? 'hidden md:flex' : null,
+				)
+			"
+		>
 			<FieldSet
+				v-if="DISABLE_HOSTNAME_CHANGE === false"
 				id="jsonApiUrl"
 				:value="ledStripStore.settings.hostname"
 				label="IP Address"
@@ -31,6 +38,7 @@ const ledStripStore = useLedStripStore()
 			/>
 
 			<FieldSet
+				v-if="DISABLE_BRIGHTNESS_CHANGE === false"
 				id="brightness"
 				:value="ledStripStore.settings.brightness"
 				@change="(value) => (ledStripStore.settings.brightness = parseInt(value))"
@@ -40,8 +48,8 @@ const ledStripStore = useLedStripStore()
 				max="255"
 			/>
 
-			<div class="flex flex-col items-center justify-center gap-2">
-				<div class="flex w-full flex-row flex-wrap gap-2">
+			<div class="hidden flex-col items-center justify-center gap-2 md:flex">
+				<div class="hidden w-full flex-row flex-wrap gap-2 md:flex">
 					<!-- current color -->
 					<ColorItem
 						:color="ledStripStore.settings.drawingColor"
