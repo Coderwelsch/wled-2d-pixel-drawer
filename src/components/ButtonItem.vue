@@ -27,7 +27,7 @@
 import { defineEmits, defineProps } from "vue"
 
 const baseClasses =
-	"flex items-center justify-center gap-1 focus:outline-none transition ease-in-out duration-150 rounded-lg font-bold cursor-pointer"
+	"flex items-center justify-center gap-1.5 focus:outline-none transition ease-in-out duration-150 rounded-lg font-bold cursor-pointer"
 
 const sizeClasses = {
 	sm: "px-2.5 py-1.5 text-xs",
