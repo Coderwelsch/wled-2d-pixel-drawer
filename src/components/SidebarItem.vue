@@ -34,14 +34,14 @@ const ledStripStore = useLedStripStore()
 				label="IP Address"
 				type="text"
 				class="font-mono"
-				@change="(value) => (ledStripStore.settings.hostname = value)"
+				@change="(value) => (ledStripStore.settings.hostname = value as string)"
 			/>
 
 			<FieldSet
 				v-if="DISABLE_BRIGHTNESS_CHANGE === false"
 				id="brightness"
 				:value="ledStripStore.settings.brightness"
-				@change="(value) => (ledStripStore.settings.brightness = parseInt(value))"
+				@change="(value) => (ledStripStore.settings.brightness = parseInt(value as string))"
 				label="Brightness"
 				type="range"
 				min="0"
@@ -69,7 +69,7 @@ const ledStripStore = useLedStripStore()
 					class="hidden w-full md:block"
 					id="color"
 					:value="ledStripStore.settings.drawingColor"
-					@change="(value) => (ledStripStore.settings.drawingColor = value)"
+					@change="(value) => (ledStripStore.settings.drawingColor = value as string)"
 					label="Color"
 					type="color"
 				/>
