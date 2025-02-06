@@ -7,6 +7,7 @@ const baseStyles =
 
 const inputStyles: Record<"text" | string, string> = {
 	text: "bg-neutral-100/10 focus:bg-neutral-100/20 text-neutral-50",
+	file: "bg-neutral-100/10 focus:bg-neutral-100/20 text-neutral-50",
 }
 
 const props = defineProps({
@@ -19,7 +20,7 @@ const props = defineProps({
 		required: true,
 	},
 	value: {
-		type: [String, Number],
+		type: [String, Number, File, null],
 		required: true,
 	},
 	type: {
@@ -45,17 +46,13 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-	(e: "change", value: string): void
+	(e: "change", value: string | File | FileList, event: Event): void
 }>()
 
 const inputValue = ref(props.value)
 
-const handleChange = (event: {
-	target: {
-		value: string
-	}
-}) => {
-	emit("change", event.target.value)
+const handleChange = (event: Event) => {
+	emit("change", event.target?.value, event)
 }
 </script>
 
@@ -66,25 +63,43 @@ const handleChange = (event: {
 			[props.class]: true,
 		}"
 	>
-		<label v-if="type !== 'color'" :for="id" class="text-sm font-bold tracking-widest text-neutral-400 uppercase">
-			{{ label }}
-		</label>
+		<template v-if="type !== 'color' && type !== 'file'">
+			<label :for="id" class="text-sm font-bold tracking-widest text-neutral-400 uppercase">
+				{{ label }}
+			</label>
 
-		<input
-			v-if="type !== 'color'"
-			:id="id"
-			v-model="inputValue"
-			:type="type"
-			:min="min"
-			:max="max"
-			:readonly="readOnly"
-			@change="handleChange"
-			@input="handleChange"
-			:class="{
-				[baseStyles]: true,
-				[inputStyles[type]]: true,
-			}"
-		/>
+			<input
+				v-if="type !== 'color' && type !== 'file'"
+				v-model="inputValue"
+				:id="id"
+				:type="type"
+				:min="min"
+				:max="max"
+				:readonly="readOnly"
+				@change="handleChange"
+				@input="handleChange"
+				:class="{
+					[baseStyles]: true,
+					[inputStyles[type]]: true,
+				}"
+			/>
+		</template>
+
+		<template v-if="type === 'file'">
+			<label class="text-sm font-bold tracking-widest text-neutral-400 uppercase" :for="id">
+				{{ label }}
+			</label>
+
+			<input
+				type="file"
+				:id="id"
+				@change="(event) => handleChange(event)"
+				:class="{
+					[baseStyles]: true,
+					[inputStyles.file]: true,
+				}"
+			/>
+		</template>
 
 		<ColorPicker
 			v-if="type === 'color'"
@@ -98,7 +113,7 @@ const handleChange = (event: {
 						target: {
 							value: hexWithoutAlpha,
 						},
-					})
+					} as unknown as Event)
 				}
 			"
 		/>
