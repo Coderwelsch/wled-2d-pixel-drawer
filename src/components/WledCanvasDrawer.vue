@@ -8,6 +8,7 @@ import { COLOR_PRESETS } from "@/lib/constants.ts"
 import { useLedStripStore } from "@/stores/led-strip.ts"
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 
+const devicePixelRatio = window.devicePixelRatio || 1
 const ledStripStore = useLedStripStore()
 
 const drawingColor = computed(() => ledStripStore.settings.drawingColor)
@@ -48,7 +49,12 @@ const drawPixelGrid = () => {
 			const color = ledStripStore.pixelData[y][x]
 
 			context.value.fillStyle = color
-			context.value.fillRect(x * scaleFactor.value, y * scaleFactor.value, scaleFactor.value, scaleFactor.value)
+			context.value.fillRect(
+				x * scaleFactor.value * devicePixelRatio,
+				y * scaleFactor.value * devicePixelRatio,
+				scaleFactor.value * devicePixelRatio,
+				scaleFactor.value * devicePixelRatio,
+			)
 		}
 	}
 }
@@ -102,16 +108,22 @@ const drawGridLines = () => {
 
 		for (let x = 0; x <= ledStripStore.settings.cols; x++) {
 			context.value.beginPath()
-			context.value.moveTo(x * scaleFactor.value, 0)
-			context.value.lineTo(x * scaleFactor.value, ledStripStore.settings.rows * scaleFactor.value)
+			context.value.moveTo(x * scaleFactor.value * devicePixelRatio, 0)
+			context.value.lineTo(
+				x * scaleFactor.value * devicePixelRatio,
+				ledStripStore.settings.rows * scaleFactor.value * devicePixelRatio,
+			)
 			context.value.stroke()
 			context.value.closePath()
 		}
 
 		for (let y = 0; y <= ledStripStore.settings.rows; y++) {
 			context.value.beginPath()
-			context.value.moveTo(0, y * scaleFactor.value)
-			context.value.lineTo(ledStripStore.settings.cols * scaleFactor.value, y * scaleFactor.value)
+			context.value.moveTo(0, y * scaleFactor.value * devicePixelRatio)
+			context.value.lineTo(
+				ledStripStore.settings.cols * scaleFactor.value * devicePixelRatio,
+				y * scaleFactor.value * devicePixelRatio,
+			)
 			context.value.stroke()
 			context.value.closePath()
 		}
@@ -187,6 +199,10 @@ onMounted(() => {
 		canvasRef.value.addEventListener("touchend", stopDrawing)
 
 		context.value = canvasRef.value.getContext("2d")
+
+		if (context.value) {
+			context.value.scale(devicePixelRatio, devicePixelRatio)
+		}
 
 		// init render loop
 		draw()
@@ -279,8 +295,8 @@ const handleImageChange = (value: File, event: Event) => {
 		<canvas
 			ref="canvasRef"
 			id="canvas"
-			:width="ledStripStore.settings.cols * scaleFactor"
-			:height="ledStripStore.settings.rows * scaleFactor"
+			:width="ledStripStore.settings.cols * scaleFactor * devicePixelRatio"
+			:height="ledStripStore.settings.rows * scaleFactor * devicePixelRatio"
 			class="border border-neutral-500 bg-black"
 			:style="{
 				width: ledStripStore.settings.cols * scaleFactor + 'px',
