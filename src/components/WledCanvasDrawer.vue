@@ -264,8 +264,7 @@ const handleImageChange = (value: File, event: Event) => {
 				@change="(value) => (ledStripStore.settings.drawingColor = value as string)"
 			/>
 
-			<div class="flex w-full flex-row flex-wrap gap-2">
-				<!-- current color -->
+			<div class="flex w-full flex-row flex-nowrap gap-2 overflow-x-scroll">
 				<ColorItem :color="drawingColor" :name="drawingColor" active />
 
 				<ColorItem
@@ -289,7 +288,7 @@ const handleImageChange = (value: File, event: Event) => {
 			}"
 		/>
 
-		<div class="flex w-full flex-row items-center justify-between md:hidden">
+		<div class="flex w-full flex-col justify-between gap-4 sm:flex-row sm:items-center md:hidden">
 			<FieldSet
 				id="image"
 				:value="imageInputFile"
