@@ -20,7 +20,7 @@ const highContrastColor = computed(() => getHighContrastColor(currentColor.value
 	<div
 		@click="ledStripStore.settings.drawingColor = currentColor"
 		:class="{
-			'flex h-8 cursor-pointer flex-row items-center gap-1 rounded-md border-2 px-2': true,
+			'flex h-8 shrink-0 cursor-pointer flex-row items-center gap-1 rounded-md border-2 px-2': true,
 			'w-8': !props.active,
 			'border-neutral-200/50': currentColor !== drawingColor,
 			'border-blue-500': currentColor === drawingColor,
