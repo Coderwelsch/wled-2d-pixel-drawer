@@ -11,20 +11,22 @@ const props = defineProps<{
 	name?: string
 }>()
 
-const highContrastColor = computed(() => getHighContrastColor(props.color))
+const drawingColor = computed(() => ledStripStore.settings.drawingColor)
+const currentColor = computed(() => props.color)
+const highContrastColor = computed(() => getHighContrastColor(currentColor.value))
 </script>
 
 <template>
 	<div
-		@click="ledStripStore.settings.drawingColor = props.color"
+		@click="ledStripStore.settings.drawingColor = currentColor"
 		:class="{
 			'flex h-8 cursor-pointer flex-row items-center gap-1 rounded-md border-2 px-2': true,
 			'w-8': !props.active,
-			'border-neutral-200/50': props.color !== ledStripStore.settings.drawingColor,
-			'border-blue-500': props.color === ledStripStore.settings.drawingColor,
+			'border-neutral-200/50': currentColor !== drawingColor,
+			'border-blue-500': currentColor === drawingColor,
 		}"
 		:style="{
-			backgroundColor: props.color,
+			backgroundColor: currentColor,
 		}"
 	>
 		<span
@@ -34,7 +36,7 @@ const highContrastColor = computed(() => getHighContrastColor(props.color))
 				color: highContrastColor,
 			}"
 		>
-			{{ ledStripStore.settings.drawingColor }}
+			{{ drawingColor }}
 		</span>
 	</div>
 </template>
