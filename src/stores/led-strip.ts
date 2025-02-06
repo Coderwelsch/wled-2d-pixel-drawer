@@ -1,9 +1,8 @@
-import { DEFAULT_BRIGHTNESS, DEFAULT_COLS, DEFAULT_HOSTNAME, DEFAULT_ROWS } from "@/lib/constants.ts"
+import { DEFAULT_BRIGHTNESS, DEFAULT_COLS, DEFAULT_HOSTNAME, DEFAULT_ROWS, IS_DEV } from "@/lib/constants.ts"
 import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
 import { getLocalStorage, setLocalStorage } from "@/lib/local-storage.ts"
 import { defineStore } from "pinia"
-import { onMounted, ref, watch } from "vue"
-import { useToast } from "vue-toast-notification"
+import { ref, watch } from "vue"
 
 export interface GridPixelData {
 	[y: number]: {
@@ -40,14 +39,12 @@ export const useLedStripStore = defineStore("led-strip", () => {
 	const isLoading = ref(false)
 	const startTime = ref(performance.now())
 
-	const toast = useToast()
-
-	const setPixel = (x: number, y: number) => {
+	const setPixel = (x: number, y: number, color?: string) => {
 		if (!pixelData.value[y]) {
 			pixelData.value[y] = {}
 		}
 
-		pixelData.value[y][x] = settings.value.drawingColor
+		pixelData.value[y][x] = color || settings.value.drawingColor || "#000000"
 
 		setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
 		triggerSync()
@@ -66,6 +63,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			}
 		}
 
+		setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
 		triggerSync()
 	}
 
@@ -109,15 +107,14 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			.then((response) => response.json())
 			.catch((error) => {
 				console.error("Error:", error)
-				toast.error(`Error: ${error}`, {
-					position: "top",
-				})
 			})
 			.finally(() => {
 				isLoading.value = false
 
-				const size = new Blob([JSON.stringify(payload)]).size
-				console.log(`Sent ${size} bytes to server in ${performance.now() - startTime.value}ms`)
+				if (IS_DEV) {
+					const size = new Blob([JSON.stringify(payload)]).size
+					console.log(`Sent ${size} bytes to server in ${performance.now() - startTime.value}ms`)
+				}
 			})
 	}
 
@@ -134,10 +131,6 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			sendData()
 		}
 	}
-
-	onMounted(() => {
-		reset()
-	})
 
 	watch(settings.value, () => {
 		setLocalStorage(SETTINGS_STORAGE_KEY, settings.value)
