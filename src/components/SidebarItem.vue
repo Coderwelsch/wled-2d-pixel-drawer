@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import ButtonItem from "@/components/ButtonItem.vue"
-import ColorItem from "@/components/ColorItem.vue"
+import ColorPaletteChooser from "@/components/ColorPaletteChooser.vue"
 import FieldSet from "@/components/FieldSet.vue"
+import IconTrashBinSharp from "@/components/icons/IconTrashBinSharp.vue"
+import UploadImageButton from "@/components/UploadImageButton.vue"
 import VibrantHeadline from "@/components/VibrantHeadline.vue"
 import { classNames } from "@/lib/class-names.ts"
-import { COLOR_PRESETS, DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE } from "@/lib/constants.ts"
+import { DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE } from "@/lib/constants.ts"
 
 import { useLedStripStore } from "@/stores/led-strip.ts"
 
@@ -49,21 +51,7 @@ const ledStripStore = useLedStripStore()
 			/>
 
 			<div class="hidden flex-col items-center justify-center gap-2 md:flex">
-				<div class="hidden w-full flex-row flex-wrap gap-2 md:flex">
-					<!-- current color -->
-					<ColorItem
-						:color="ledStripStore.settings.drawingColor"
-						:name="ledStripStore.settings.drawingColor"
-						active
-					/>
-
-					<ColorItem
-						v-for="preset in COLOR_PRESETS"
-						:key="preset.color"
-						:color="preset.color"
-						:name="preset.name"
-					/>
-				</div>
+				<ColorPaletteChooser class="hidden md:flex" />
 
 				<FieldSet
 					class="hidden w-full md:block"
@@ -76,8 +64,16 @@ const ledStripStore = useLedStripStore()
 			</div>
 		</div>
 
-		<ButtonItem class="hidden md:flex" type="button" variant="danger" size="md" @click="ledStripStore.reset()">
-			Clear
-		</ButtonItem>
+		<div class="flex flex-col gap-4">
+			<UploadImageButton />
+
+			<ButtonItem class="hidden md:flex" type="button" variant="danger" size="md" @click="ledStripStore.reset()">
+				<slot name="iconBefore">
+					<IconTrashBinSharp class="h-4 w-4" />
+				</slot>
+
+				<slot name="default">Clear</slot>
+			</ButtonItem>
+		</div>
 	</div>
 </template>

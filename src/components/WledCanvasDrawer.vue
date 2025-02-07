@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import ButtonItem from "@/components/ButtonItem.vue"
-import ColorItem from "@/components/ColorItem.vue"
+import ColorPaletteChooser from "@/components/ColorPaletteChooser.vue"
 import FieldSet from "@/components/FieldSet.vue"
-import IconRoundDriverFolderUpload from "@/components/icons/IconRoundDriverFolderUpload.vue"
 import IconTrashBinSharp from "@/components/icons/IconTrashBinSharp.vue"
-import { rgbToHex } from "@/lib/color-helpers.ts"
-import { COLOR_PRESETS } from "@/lib/constants.ts"
+import UploadImageButton from "@/components/UploadImageButton.vue"
 import { useLedStripStore } from "@/stores/led-strip.ts"
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 
@@ -20,7 +18,6 @@ const canvasRef = ref<HTMLCanvasElement | null>(null)
 const context = ref<CanvasRenderingContext2D | null>(null)
 
 const containerRef = ref<HTMLDivElement | null>(null)
-const imageInputFile = ref<File | null>(null)
 
 const scaleFactor = computed(() => {
 	if (!containerRef.value) {
@@ -168,15 +165,6 @@ const draw = () => {
 	animationFrame.value = requestAnimationFrame(draw)
 }
 
-const handleImageFileUploadButtonClick = () => {
-	const input = document.createElement("input")
-	input.type = "file"
-	input.accept = "image/*"
-	input.click()
-
-	input.addEventListener("change", handleImageChange)
-}
-
 watch(
 	pixelData.value,
 	() => {
@@ -233,49 +221,6 @@ onBeforeUnmount(() => {
 		canvasRef.value.removeEventListener("mouseleave", stopDrawing)
 	}
 })
-
-const handleImageChange = (event: Event) => {
-	const reader = new FileReader()
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-expect-error
-	const file = event.target?.files?.[0]
-
-	reader.onload = (event) => {
-		const image = new Image()
-
-		image.onload = () => {
-			const canvas = document.createElement("canvas")
-			const tempContext = canvas.getContext("2d")
-
-			if (!tempContext) {
-				console.error("Context not found")
-				return
-			}
-
-			canvas.width = ledStripStore.settings.cols
-			canvas.height = ledStripStore.settings.rows
-
-			tempContext.drawImage(image, 0, 0, canvas.width, canvas.height)
-
-			const imageData = tempContext.getImageData(0, 0, canvas.width, canvas.height)
-
-			for (let y = 0; y < ledStripStore.settings.rows; y++) {
-				for (let x = 0; x < ledStripStore.settings.cols; x++) {
-					const index = (y * ledStripStore.settings.cols + x) * 4
-					const r = imageData.data[index]
-					const g = imageData.data[index + 1]
-					const b = imageData.data[index + 2]
-
-					ledStripStore.setPixel(x, y, rgbToHex(r, g, b))
-				}
-			}
-		}
-
-		image.src = event.target?.result as string
-	}
-
-	reader.readAsDataURL(file)
-}
 </script>
 
 <template>
@@ -290,18 +235,7 @@ const handleImageChange = (event: Event) => {
 				@change="(value) => (ledStripStore.settings.drawingColor = value as string)"
 			/>
 
-			<div class="vertical-scroll-fade-container">
-				<div class="flex w-full flex-row flex-nowrap gap-2 overflow-x-scroll">
-					<ColorItem :color="drawingColor" :name="drawingColor" active />
-
-					<ColorItem
-						v-for="preset in COLOR_PRESETS"
-						:key="preset.color"
-						:color="preset.color"
-						:name="preset.name"
-					/>
-				</div>
-			</div>
+			<ColorPaletteChooser />
 		</div>
 
 		<hr class="w-full border-neutral-700 md:hidden" />
@@ -321,13 +255,7 @@ const handleImageChange = (event: Event) => {
 		<hr class="w-full border-neutral-700 md:hidden" />
 
 		<div class="flex w-full flex-col justify-between gap-4 sm:flex-row sm:items-center md:hidden">
-			<ButtonItem type="button" variant="primary" size="md" @click="handleImageFileUploadButtonClick">
-				<slot name="iconBefore">
-					<IconRoundDriverFolderUpload class="h-4 w-4" />
-				</slot>
-
-				<slot name="default">Upload image</slot>
-			</ButtonItem>
+			<UploadImageButton />
 
 			<ButtonItem type="button" variant="danger" size="md" @click="ledStripStore.reset()">
 				<slot name="iconBefore">
@@ -342,22 +270,5 @@ const handleImageChange = (event: Event) => {
 <style>
 .mobile-color-picker .vacp-color-space {
 	aspect-ratio: 1 / 0.2;
-}
-
-.vertical-scroll-fade-container {
-	position: relative;
-
-	&::after {
-		position: absolute;
-		top: 0;
-		right: 0;
-		z-index: 1;
-
-		content: "";
-
-		width: 2rem;
-		height: 100%;
-		background: linear-gradient(to right, rgba(23, 23, 23, 0), #171717);
-	}
 }
 </style>
