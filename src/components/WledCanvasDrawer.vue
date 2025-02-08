@@ -2,6 +2,7 @@
 import ButtonItem from "@/components/ButtonItem.vue"
 import ColorPaletteChooser from "@/components/ColorPaletteChooser.vue"
 import FieldSet from "@/components/FieldSet.vue"
+import HorizontalDivider from "@/components/HorizontalDivider.vue"
 import IconTrashBinSharp from "@/components/icons/IconTrashBinSharp.vue"
 import UploadImageButton from "@/components/UploadImageButton.vue"
 import { useLedStripStore } from "@/stores/led-strip.ts"
@@ -182,6 +183,12 @@ watch(
 	{ deep: true },
 )
 
+const handleClickDrawing = (event: MouseEvent) => {
+	isDrawing.value = true
+	handleDrawing(event)
+	isDrawing.value = false
+}
+
 onMounted(() => {
 	if (containerRef.value) {
 		resizeCanvasToFitView()
@@ -189,7 +196,7 @@ onMounted(() => {
 	}
 
 	if (canvasRef.value) {
-		canvasRef.value.addEventListener("click", handleDrawing)
+		canvasRef.value.addEventListener("click", handleClickDrawing)
 		canvasRef.value.addEventListener("mousedown", startDrawing)
 		canvasRef.value.addEventListener("mousemove", handleDrawing)
 		canvasRef.value.addEventListener("mouseup", stopDrawing)
@@ -219,6 +226,11 @@ onBeforeUnmount(() => {
 	}
 
 	if (canvasRef.value) {
+		canvasRef.value.removeEventListener("click", handleClickDrawing)
+		canvasRef.value.removeEventListener("touchstart", startDrawing)
+		canvasRef.value.removeEventListener("touchmove", handleDrawing)
+		canvasRef.value.removeEventListener("touchend", stopDrawing)
+
 		canvasRef.value.removeEventListener("mousedown", startDrawing)
 		canvasRef.value.removeEventListener("mousemove", handleDrawing)
 		canvasRef.value.removeEventListener("mouseup", stopDrawing)
@@ -242,7 +254,7 @@ onBeforeUnmount(() => {
 			<ColorPaletteChooser />
 		</div>
 
-		<hr class="w-full border-neutral-700 md:hidden" />
+		<HorizontalDivider />
 
 		<canvas
 			ref="canvasRef"
@@ -256,7 +268,7 @@ onBeforeUnmount(() => {
 			}"
 		/>
 
-		<hr class="w-full border-neutral-700 md:hidden" />
+		<HorizontalDivider />
 
 		<div class="flex w-full flex-col justify-between gap-4 sm:flex-row sm:items-center md:hidden">
 			<UploadImageButton />
