@@ -41,6 +41,9 @@ const drawingColor = computed(() => ledStripStore.settings.drawingColor)
 
 		width: 2rem;
 		height: 100%;
+
+		pointer-events: none;
+
 		background: linear-gradient(to right, rgba(23, 23, 23, 0), #171717);
 	}
 }
