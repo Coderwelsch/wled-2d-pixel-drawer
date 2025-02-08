@@ -52,6 +52,8 @@ const emit = defineEmits<{
 const inputValue = ref(props.value)
 
 const handleChange = (event: Event) => {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-expect-error
 	emit("change", event.target?.value, event)
 }
 </script>
