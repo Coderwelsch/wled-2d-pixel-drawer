@@ -44,6 +44,10 @@ const drawPixelGrid = () => {
 
 	for (let y = 0; y < ledStripStore.settings.rows; y++) {
 		for (let x = 0; x < ledStripStore.settings.cols; x++) {
+			if (!ledStripStore.pixelData[y] || !ledStripStore.pixelData[y][x]) {
+				continue
+			}
+
 			const color = ledStripStore.pixelData[y][x]
 
 			context.value.fillStyle = color
