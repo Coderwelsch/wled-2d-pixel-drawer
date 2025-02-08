@@ -4,6 +4,10 @@ import IconRoundDriverFolderUpload from "@/components/icons/IconRoundDriverFolde
 import { rgbToHex } from "@/lib/color-helpers.ts"
 import { useLedStripStore } from "@/stores/led-strip.ts"
 
+const props = defineProps<{
+	class?: string
+}>()
+
 const ledStripStore = useLedStripStore()
 
 const handleImageChange = (event: Event) => {
@@ -60,7 +64,13 @@ const handleImageFileUploadButtonClick = () => {
 </script>
 
 <template>
-	<ButtonItem type="button" variant="primary" size="md" @click="handleImageFileUploadButtonClick">
+	<ButtonItem
+		:class="props.class"
+		type="button"
+		variant="primary"
+		size="md"
+		@click="handleImageFileUploadButtonClick"
+	>
 		<slot name="iconBefore">
 			<IconRoundDriverFolderUpload class="h-4 w-4" />
 		</slot>
