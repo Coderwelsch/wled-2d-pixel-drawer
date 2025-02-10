@@ -52,7 +52,7 @@ const ledStripStore = useLedStripStore()
 				label="Brightness"
 				type="range"
 				min="0"
-				max="255"
+				max="100"
 			/>
 
 			<div class="hidden flex-col items-center justify-center gap-2 md:flex">
