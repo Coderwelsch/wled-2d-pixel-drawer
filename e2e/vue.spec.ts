@@ -12,7 +12,7 @@ test("visits the app root url", async ({ page }) => {
 test("navigates to effects page", async ({ page }) => {
 	await page.goto("/")
 
-	await page.locator('button:text("Effects")').click()
+	await page.getByRole("button", { name: /Effects/ }).click()
 
 	await expect(page).toHaveURL("/effects")
 	await expect(page.locator("p")).toHaveText("Select an effect")
