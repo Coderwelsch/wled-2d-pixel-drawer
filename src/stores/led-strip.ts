@@ -17,6 +17,7 @@ interface LedStripStore {
 	brightness: number
 	hostname: string
 	drawingColor: string
+	effect: number | null
 }
 
 const SETTINGS_STORAGE_KEY = "led-strip-settings"
@@ -30,6 +31,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 		scale: 32,
 		cols: DEFAULT_COLS,
 		rows: DEFAULT_ROWS,
+		effect: null,
 	})
 
 	const localStoragePixelData = getLocalStorage<GridPixelData>(PIXEL_DATA_STORAGE_KEY, {})
@@ -52,6 +54,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 
 	const reset = () => {
 		pixelData.value = {}
+		settings.value.effect = null
 
 		for (let y = 0; y < settings.value.rows; y++) {
 			for (let x = 0; x < settings.value.cols; x++) {
@@ -69,13 +72,44 @@ export const useLedStripStore = defineStore("led-strip", () => {
 
 	const autoUpdaterTimeout = ref<number | null>(null)
 
-	const sendData = async () => {
+	const updateLedStrip = async (payload: unknown): Promise<unknown> => {
+		if (isLoading.value) {
+			console.log("Json Api busy", isLoading.value)
+			return Promise.reject()
+		}
+
+		startTime.value = performance.now()
+		isLoading.value = true
+
+		const apiUrl = `http://${settings.value.hostname}/json`
+
+		return fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			signal: AbortSignal.timeout(1000),
+			body: JSON.stringify(payload),
+		})
+			.then((response) => response.json())
+			.catch((error) => {
+				console.error("Error:", error)
+			})
+			.finally(() => {
+				isLoading.value = false
+
+				if (IS_DEV) {
+					const size = new Blob([JSON.stringify(payload)]).size
+					console.log(`Sent ${size} bytes to server in ${performance.now() - startTime.value}ms`)
+				}
+			})
+	}
+
+	const sendPixelData = async () => {
 		if (isLoading.value) {
 			console.log("Json Api busy", isLoading.value)
 			return
 		}
-
-		const apiUrl = `http://${settings.value.hostname}/json`
 
 		const flatData = (
 			Object.values(pixelData.value)
@@ -94,28 +128,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			},
 		}
 
-		startTime.value = performance.now()
-		isLoading.value = true
-
-		await fetch(apiUrl, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(payload),
-		})
-			.then((response) => response.json())
-			.catch((error) => {
-				console.error("Error:", error)
-			})
-			.finally(() => {
-				isLoading.value = false
-
-				if (IS_DEV) {
-					const size = new Blob([JSON.stringify(payload)]).size
-					console.log(`Sent ${size} bytes to server in ${performance.now() - startTime.value}ms`)
-				}
-			})
+		return updateLedStrip(payload)
 	}
 
 	const triggerSync = () => {
@@ -125,11 +138,41 @@ export const useLedStripStore = defineStore("led-strip", () => {
 
 		if (isLoading.value) {
 			autoUpdaterTimeout.value = setTimeout(() => {
-				sendData()
+				sendPixelData().catch(() => {
+					console.error("Error sending pixel data")
+				})
 			}, 50) as unknown as number
 		} else {
-			sendData()
+			sendPixelData().catch(() => {
+				console.error("Error sending pixel data")
+			})
 		}
+	}
+
+	const setEffect = async (effect: number | null) => {
+		// when effect is null, we will only update the state, not the strip
+		if (effect === null) {
+			settings.value.effect = effect
+			return
+		}
+
+		// "restart" the strip to remove pixelData
+		// to switch to effect mode
+		if (!settings.value.effect) {
+			await updateLedStrip({
+				on: false,
+			})
+		}
+
+		settings.value.effect = effect
+
+		await updateLedStrip({
+			// turn on strip in any case
+			on: true,
+			seg: {
+				fx: effect,
+			},
+		})
 	}
 
 	watch(settings.value, () => {
@@ -141,6 +184,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 		isLoading,
 		settings,
 		setPixel,
+		setEffect,
 		pixelData,
 		reset,
 	}

@@ -37,7 +37,7 @@ const sizeClasses = {
 const variantClasses = {
 	primary: "bg-blue-500 text-white hover:bg-blue-600",
 	secondary: "bg-gray-500 text-white hover:bg-gray-600",
-	minimal: "bg-transparent text-gray-200 hover:text-gray-400",
+	minimal: "bg-gray-50/10 text-gray-200 hover:text-gray-50 hover:bg-gray-50/20",
 	danger: "bg-red-500 text-white hover:bg-red-600",
 }
 

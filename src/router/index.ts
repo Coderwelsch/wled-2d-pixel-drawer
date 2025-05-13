@@ -1,7 +1,9 @@
+import { DISABLE_WLED_EFFECTS } from "@/lib/constants.ts"
 import HomeView from "@/views/HomeView.vue"
+import WLEDEffectsView from "@/views/WLEDEffectsView.vue"
 import { createRouter, createWebHistory } from "vue-router"
 
-const router = createRouter({
+const routerOptions = {
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
 		{
@@ -10,6 +12,14 @@ const router = createRouter({
 			component: HomeView,
 		},
 	],
-})
+}
 
-export default router
+if (!DISABLE_WLED_EFFECTS) {
+	routerOptions.routes.push({
+		path: "/effects",
+		name: "effects",
+		component: WLEDEffectsView,
+	})
+}
+
+export default createRouter(routerOptions)
