@@ -28,7 +28,9 @@ const ledStripStore = useLedStripStore()
 			:class="classNames(DISABLE_HOSTNAME_CHANGE && DISABLE_BRIGHTNESS_CHANGE ? 'hidden' : null)"
 		/>
 
-		<p class="text-md text-neutral-200">Write something on the canvas and see it displayed on the LED strip.</p>
+		<p class="text-md text-center text-neutral-200">
+			Write something on the canvas and see it displayed on the LED strip.
+		</p>
 
 		<HorizontalDivider />
 

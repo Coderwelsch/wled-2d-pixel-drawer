@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import SidebarItem from "@/components/SidebarItem.vue"
 import WledCanvasDrawer from "@/components/WledCanvasDrawer.vue"
+import { useLedStripStore } from "@/stores/led-strip.ts"
+import { onMounted } from "vue"
+
+const ledStripStore = useLedStripStore()
+
+onMounted(() => {
+	ledStripStore.setEffect(null)
+})
 </script>
 
 <template>

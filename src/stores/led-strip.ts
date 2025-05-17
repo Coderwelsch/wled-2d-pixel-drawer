@@ -111,6 +111,11 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			return
 		}
 
+		if (settings.value.effect) {
+			// if effect is set, we don't need to send pixel data
+			return
+		}
+
 		const flatData = (
 			Object.values(pixelData.value)
 				.map((row) => Object.values(row))
