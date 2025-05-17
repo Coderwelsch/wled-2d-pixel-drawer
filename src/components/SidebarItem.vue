@@ -17,7 +17,7 @@ const ledStripStore = useLedStripStore()
 </script>
 
 <template>
-	<div class="flex flex-col gap-6 p-6 md:h-auto md:overflow-y-scroll md:bg-neutral-800">
+	<div class="flex flex-col gap-6 p-6 md:bg-neutral-800 lg:h-auto lg:overflow-y-scroll">
 		<div class="mx-auto flex w-full max-w-md flex-col items-center justify-center text-center">
 			<VibrantHeadline class="mx-auto -mb-4 w-full max-w-xs">PIXEL DIS/PLAY</VibrantHeadline>
 
