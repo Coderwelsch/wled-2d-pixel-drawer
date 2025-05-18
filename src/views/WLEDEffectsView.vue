@@ -6,7 +6,7 @@ import VibrantHeadline from "@/components/VibrantHeadline.vue"
 import { navigationItems } from "@/lib/navigation-items.ts"
 import { WLED_EFFECTS_2D } from "@/lib/wled-effects-2d.ts"
 import { useLedStripStore } from "@/stores/led-strip.ts"
-import { computed, onMounted } from "vue"
+import { computed, onMounted, ref } from "vue"
 
 const ledStripStore = useLedStripStore()
 
@@ -17,6 +17,44 @@ onMounted(() => {
 
 const selectedEffectName = computed(() => {
 	return WLED_EFFECTS_2D.find((effect) => effect.id === ledStripStore.settings.effect)?.name
+})
+
+const fetchEffects = async (): Promise<string[]> => {
+	try {
+		const response = await fetch(`http://${ledStripStore.settings.hostname}/json/effects`)
+
+		if (!response.ok) {
+			throw new Error("Network response was not ok")
+		}
+
+		const data = (await response.json()) as string[]
+		return data
+	} catch (error) {
+		console.error("Error fetching effects:", error)
+	}
+
+	return [] as string[]
+}
+
+const fetchedEffects = ref<typeof WLED_EFFECTS_2D | null>(null)
+
+onMounted(async () => {
+	const effects = await fetchEffects()
+
+	const reducedEffects = WLED_EFFECTS_2D.reduce(
+		(acc, curr) => {
+			const foundEffect = curr.id < effects.length && effects[curr.id]
+
+			if (foundEffect) {
+				acc.push(curr)
+			}
+
+			return acc
+		},
+		[] as typeof WLED_EFFECTS_2D,
+	)
+
+	fetchedEffects.value = reducedEffects
 })
 </script>
 
@@ -40,17 +78,39 @@ const selectedEffectName = computed(() => {
 			Effect: <span class="font-semibold">{{ selectedEffectName }}</span>
 		</p>
 
-		<div class="flex flex-col gap-3">
+		<div v-if="fetchedEffects" class="flex flex-col gap-3">
 			<ButtonItem
-				v-for="(item, index) in WLED_EFFECTS_2D"
-				:key="index"
+				v-for="effect in fetchedEffects"
+				:key="effect.id"
 				type="button"
 				size="md"
-				:variant="ledStripStore.settings.effect === item.id ? 'primary' : 'minimal'"
-				@click="ledStripStore.setEffect(item.id)"
+				:variant="ledStripStore.settings.effect === effect.id ? 'primary' : 'minimal'"
+				@click="ledStripStore.setEffect(effect.id)"
 			>
-				{{ item.name }}
+				{{ effect.name }}
 			</ButtonItem>
+		</div>
+		<div v-else class="flex h-full w-full items-center justify-center text-center text-neutral-400">
+			<p class="text-sm">Loading effects …</p>
+
+			<svg
+				class="h-5 w-5 animate-spin text-neutral-400"
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				aria-hidden="true"
+			>
+				<path
+					class="opacity-25"
+					fill="currentColor"
+					d="M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm0 2a6 6 0 1 1 0 12A6 6 0 0 1 12 6z"
+				/>
+				<path
+					class="opacity-75"
+					fill="currentColor"
+					d="M12.04 3.5a8.5 8.5 0 1 1-.08.01A8.5 8.5 0 0 1 12.04 3.5z"
+				/>
+			</svg>
 		</div>
 	</div>
 </template>
