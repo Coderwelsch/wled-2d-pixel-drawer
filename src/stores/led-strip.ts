@@ -1,5 +1,4 @@
 import { DEFAULT_BRIGHTNESS, DEFAULT_COLS, DEFAULT_HOSTNAME, DEFAULT_ROWS, IS_DEV } from "@/lib/constants.ts"
-import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
 import { getLocalStorage, setLocalStorage } from "@/lib/local-storage.ts"
 import { defineStore } from "pinia"
 import { ref, watch } from "vue"
@@ -122,14 +121,12 @@ export const useLedStripStore = defineStore("led-strip", () => {
 				.flat() as string[]
 		).map((color: string) => color.replace("#", ""))
 
-		const transformedData = generateSerpentineData(flatData, settings.value.rows, settings.value.cols)
-
 		const payload = {
 			on: true,
 			bri: settings.value.brightness,
 			len: settings.value.cols * settings.value.rows,
 			seg: {
-				i: transformedData,
+				i: flatData,
 			},
 		}
 
