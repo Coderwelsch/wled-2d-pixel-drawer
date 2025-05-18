@@ -8,6 +8,7 @@ const ledStripStore = useLedStripStore()
 
 onMounted(() => {
 	ledStripStore.setEffect(null)
+	ledStripStore.setSerpentineMode(false)
 })
 </script>
 

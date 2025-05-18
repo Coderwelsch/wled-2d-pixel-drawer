@@ -13,6 +13,7 @@ const ledStripStore = useLedStripStore()
 // reset effect to null on mount
 onMounted(() => {
 	ledStripStore.setEffect(null)
+	ledStripStore.setSerpentineMode(true)
 })
 
 const selectedEffectName = computed(() => {

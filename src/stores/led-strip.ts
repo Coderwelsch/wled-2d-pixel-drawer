@@ -1,4 +1,5 @@
 import { DEFAULT_BRIGHTNESS, DEFAULT_COLS, DEFAULT_HOSTNAME, DEFAULT_ROWS, IS_DEV } from "@/lib/constants.ts"
+import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
 import { getLocalStorage, setLocalStorage } from "@/lib/local-storage.ts"
 import { defineStore } from "pinia"
 import { ref, watch } from "vue"
@@ -39,6 +40,46 @@ export const useLedStripStore = defineStore("led-strip", () => {
 
 	const isLoading = ref(false)
 	const startTime = ref(performance.now())
+
+	const setSerpentineMode = (serpentine: boolean) => {
+		const bodyParams = new URLSearchParams()
+		bodyParams.append("SOMP", "1")
+		bodyParams.append("PW", settings.value.cols.toString())
+		bodyParams.append("PH", settings.value.rows.toString())
+		bodyParams.append("MPH", "1")
+		bodyParams.append("MPV", "1")
+		bodyParams.append("PB", "0")
+		bodyParams.append("PR", "0")
+		bodyParams.append("PV", "0")
+		bodyParams.append("MPC", "1")
+		bodyParams.append("P0B", "0")
+		bodyParams.append("P0R", "0")
+		bodyParams.append("P0V", "0")
+		bodyParams.append("P0W", settings.value.cols.toString())
+		bodyParams.append("P0H", settings.value.rows.toString())
+		bodyParams.append("P0X", "0")
+		bodyParams.append("P0Y", "0")
+		bodyParams.append("data", "")
+
+		// to enable serpentine mode, we need to set P0S to "on"
+		// to disable it we just need to exclude the property completely, "off" does not work
+		if (serpentine) {
+			bodyParams.append("P0S", "on")
+		}
+
+		// curl 'http://192.168.178.189/settings/2D' -X POST -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:138.0) Gecko/20100101 Firefox/138.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: de-DE' -H 'Accept-Encoding: gzip, deflate' -H 'Referer: http://192.168.178.189/settings/2D' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Origin: http://192.168.178.189' -H 'DNT: 1' -H 'Connection: keep-alive' -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-GPC: 1' -H 'Priority: u=0, i' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' --data-raw 'SOMP=1&PW=8&PH=8&MPH=1&MPV=1&PB=0&PR=0&PV=0&MPC=1&P0B=0&P0R=0&P0V=0&P0S=on&P0W=30&P0H=30&P0X=0&P0Y=0&data='
+		return fetch(`http://${settings.value.hostname}/settings/2D`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			body: bodyParams.toString(),
+		})
+			.then((response) => response.json())
+			.catch((error) => {
+				console.error("Error:", error)
+			})
+	}
 
 	const setPixel = (x: number, y: number, color?: string) => {
 		if (!pixelData.value[y]) {
@@ -126,7 +167,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			bri: settings.value.brightness,
 			len: settings.value.cols * settings.value.rows,
 			seg: {
-				i: flatData,
+				i: generateSerpentineData(flatData, settings.value.cols, settings.value.rows),
 			},
 		}
 
@@ -187,6 +228,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 		settings,
 		setPixel,
 		setEffect,
+		setSerpentineMode,
 		pixelData,
 		reset,
 	}
