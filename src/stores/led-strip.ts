@@ -183,6 +183,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			autoUpdaterTimeout.value = setTimeout(() => {
 				sendPixelData().catch(() => {
 					console.error("Error sending pixel data")
+					alert("Error sending pixel data")
 				})
 			}, 50) as unknown as number
 		} else {
