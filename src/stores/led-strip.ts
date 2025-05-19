@@ -88,7 +88,10 @@ export const useLedStripStore = defineStore("led-strip", () => {
 
 		pixelData.value[y][x] = color || settings.value.drawingColor || "#000000"
 
-		setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
+		if (isLocalStorageAvailable()) {
+			setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
+		}
+
 		triggerSync()
 	}
 
@@ -106,7 +109,10 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			}
 		}
 
-		setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
+		if (isLocalStorageAvailable()) {
+			setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
+		}
+
 		triggerSync()
 	}
 
