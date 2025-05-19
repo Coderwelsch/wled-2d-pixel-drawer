@@ -4,7 +4,7 @@ import HorizontalDivider from "@/components/HorizontalDivider.vue"
 import NavigationItem from "@/components/NavigationItem.vue"
 import VibrantHeadline from "@/components/VibrantHeadline.vue"
 import { navigationItems } from "@/lib/navigation-items.ts"
-import { WLED_EFFECTS_2D } from "@/lib/wled-effects-2d.ts"
+import { IGNORED_EFFECTS_2D, WLED_EFFECTS_2D } from "@/lib/wled-effects-2d.ts"
 import { useLedStripStore } from "@/stores/led-strip.ts"
 import { computed, onMounted, ref } from "vue"
 
@@ -45,6 +45,11 @@ onMounted(async () => {
 	const reducedEffects = WLED_EFFECTS_2D.reduce(
 		(acc, curr) => {
 			const foundEffect = curr.id < effects.length && effects[curr.id]
+			const isIgnored = IGNORED_EFFECTS_2D.includes(curr.id)
+
+			if (isIgnored) {
+				return acc
+			}
 
 			if (foundEffect) {
 				acc.push(curr)

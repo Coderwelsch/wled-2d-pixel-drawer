@@ -1,3 +1,16 @@
+export const IGNORED_EFFECTS_2D = [
+	121, // Blobs
+	120, // Ghost Rider
+	82, // Halloween Eyes
+	180, // Hiphotic
+	53, // Image
+	154, // Metaballs
+	65, // Palette
+	99, // Ripple Rainbow
+	122, // Scrolling Text
+	181, // Sindots
+]
+
 export const WLED_EFFECTS_2D = [
 	{
 		id: 186,
