@@ -18,12 +18,9 @@ export const getLocalStorage = <Type>(key: string, defaultValue: Type): Type => 
 }
 
 export const isLocalStorageAvailable = () => {
-	try {
-		const testKey = "__test__"
-		localStorage.setItem(testKey, "test")
-		localStorage.removeItem(testKey)
-		return true
-	} catch {
+	if (typeof window === "undefined") {
 		return false
 	}
+
+	return "localStorage" in window
 }
