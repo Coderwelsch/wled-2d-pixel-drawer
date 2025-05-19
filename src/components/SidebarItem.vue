@@ -9,11 +9,23 @@ import UploadImageButton from "@/components/UploadImageButton.vue"
 import VibrantHeadline from "@/components/VibrantHeadline.vue"
 import { classNames } from "@/lib/class-names.ts"
 import { DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE } from "@/lib/constants.ts"
+import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
 import { navigationItems } from "@/lib/navigation-items.ts"
 
 import { useLedStripStore } from "@/stores/led-strip.ts"
+import { computed } from "vue"
 
 const ledStripStore = useLedStripStore()
+
+const convertedPixelData = computed(() => {
+	const flatData = (
+		Object.values(ledStripStore.pixelData)
+			.map((row) => Object.values(row))
+			.flat() as string[]
+	).map((color: string) => color.replace("#", ""))
+
+	return generateSerpentineData(flatData, ledStripStore.settings.rows, ledStripStore.settings.cols)
+})
 </script>
 
 <template>
@@ -89,6 +101,13 @@ const ledStripStore = useLedStripStore()
 
 				<slot name="default">Clear</slot>
 			</ButtonItem>
+		</div>
+
+		<!--	show pixel data for debugging	-->
+		<div
+			class="code flex flex-col gap-4 rounded-lg border border-neutral-700 bg-neutral-900 p-4 text-sm whitespace-pre text-neutral-400"
+		>
+			{{ JSON.stringify(convertedPixelData, null, 4) }}
 		</div>
 	</div>
 </template>
