@@ -8,7 +8,7 @@ import NavigationItem from "@/components/NavigationItem.vue"
 import UploadImageButton from "@/components/UploadImageButton.vue"
 import VibrantHeadline from "@/components/VibrantHeadline.vue"
 import { classNames } from "@/lib/class-names.ts"
-import { DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE } from "@/lib/constants.ts"
+import { DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE, IS_DEV } from "@/lib/constants.ts"
 import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
 import { navigationItems } from "@/lib/navigation-items.ts"
 
@@ -103,8 +103,9 @@ const convertedPixelData = computed(() => {
 			</ButtonItem>
 		</div>
 
-		<!--	show pixel data for debugging	-->
+		<!--	show pixel data on dev	-->
 		<div
+			v-if="IS_DEV"
 			class="code flex h-36 shrink-0 flex-col gap-4 overflow-y-scroll rounded-lg border border-neutral-700 bg-neutral-900 p-4 text-sm whitespace-pre text-neutral-400"
 		>
 			{{ JSON.stringify(convertedPixelData, null, 4) }}
