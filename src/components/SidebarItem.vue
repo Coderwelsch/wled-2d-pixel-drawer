@@ -105,7 +105,7 @@ const convertedPixelData = computed(() => {
 
 		<!--	show pixel data for debugging	-->
 		<div
-			class="code flex flex-col gap-4 rounded-lg border border-neutral-700 bg-neutral-900 p-4 text-sm whitespace-pre text-neutral-400"
+			class="code flex h-36 shrink-0 flex-col gap-4 overflow-y-scroll rounded-lg border border-neutral-700 bg-neutral-900 p-4 text-sm whitespace-pre text-neutral-400"
 		>
 			{{ JSON.stringify(convertedPixelData, null, 4) }}
 		</div>
