@@ -86,7 +86,10 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			pixelData.value[y] = {}
 		}
 
-		pixelData.value[y][x] = color || settings.value.drawingColor || "#000000"
+		const colorWithoutHash = color?.replace("#", "")
+		const drawingColorWithoutHash = settings.value.drawingColor.replace("#", "")
+
+		pixelData.value[y][x] = colorWithoutHash || drawingColorWithoutHash || "000000"
 
 		if (isLocalStorageAvailable()) {
 			setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
@@ -105,7 +108,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 					pixelData.value[y] = {}
 				}
 
-				pixelData.value[y][x] = "#000000"
+				pixelData.value[y][x] = "000000"
 			}
 		}
 

@@ -49,7 +49,7 @@ const drawPixelGrid = () => {
 				continue
 			}
 
-			const color = ledStripStore.pixelData[y][x]
+			const color = `#${ledStripStore.pixelData[y][x]}`
 
 			context.value.fillStyle = color
 			context.value.fillRect(
