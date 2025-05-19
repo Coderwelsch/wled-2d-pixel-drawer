@@ -8,7 +8,7 @@ import NavigationItem from "@/components/NavigationItem.vue"
 import UploadImageButton from "@/components/UploadImageButton.vue"
 import VibrantHeadline from "@/components/VibrantHeadline.vue"
 import { classNames } from "@/lib/class-names.ts"
-import { DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE, IS_DEV } from "@/lib/constants.ts"
+import { DISABLE_BRIGHTNESS_CHANGE, DISABLE_HOSTNAME_CHANGE, DISABLE_UPLOAD_BUTTON, IS_DEV } from "@/lib/constants.ts"
 import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
 import { navigationItems } from "@/lib/navigation-items.ts"
 
@@ -92,7 +92,7 @@ const convertedPixelData = computed(() => {
 		<HorizontalDivider class="hidden md:block" />
 
 		<div class="hidden flex-col gap-4 md:flex">
-			<UploadImageButton />
+			<UploadImageButton v-if="!DISABLE_UPLOAD_BUTTON" />
 
 			<ButtonItem type="button" variant="danger" size="md" @click="ledStripStore.reset()">
 				<slot name="iconBefore">

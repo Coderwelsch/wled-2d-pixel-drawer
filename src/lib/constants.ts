@@ -1,5 +1,7 @@
 export const IS_DEV = import.meta.env.DEV || false
 
+export const DISABLE_UPLOAD_BUTTON = import.meta.env.VITE_DISABLE_UPLOAD_BUTTON === "true" || false
+
 export const DISABLE_WLED_EFFECTS = import.meta.env.VITE_DISABLE_WLED_EFFECTS === "true" || false
 
 export const DISABLE_BRIGHTNESS_CHANGE = import.meta.env.VITE_DISABLE_BRIGHTNESS_CHANGE === "true" || false
