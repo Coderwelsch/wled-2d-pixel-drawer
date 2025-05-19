@@ -103,11 +103,11 @@ export const useLedStripStore = defineStore("led-strip", () => {
 		settings.value.effect = null
 
 		for (let y = 0; y < settings.value.rows; y++) {
-			for (let x = 0; x < settings.value.cols; x++) {
-				if (!pixelData.value[y]) {
-					pixelData.value[y] = {}
-				}
+			if (!pixelData.value[y]) {
+				pixelData.value[y] = {}
+			}
 
+			for (let x = 0; x < settings.value.cols; x++) {
 				pixelData.value[y][x] = "000000"
 			}
 		}
