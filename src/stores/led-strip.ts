@@ -1,6 +1,6 @@
 import { DEFAULT_BRIGHTNESS, DEFAULT_COLS, DEFAULT_HOSTNAME, DEFAULT_ROWS, IS_DEV } from "@/lib/constants.ts"
 import { generateSerpentineData } from "@/lib/generate-serpentine-data.ts"
-import { getLocalStorage, setLocalStorage } from "@/lib/local-storage.ts"
+import { getLocalStorage, isLocalStorageAvailable, setLocalStorage } from "@/lib/local-storage.ts"
 import { defineStore } from "pinia"
 import { ref, watch } from "vue"
 
@@ -219,7 +219,12 @@ export const useLedStripStore = defineStore("led-strip", () => {
 	}
 
 	watch(settings.value, () => {
-		setLocalStorage(SETTINGS_STORAGE_KEY, settings.value)
+		if (isLocalStorageAvailable()) {
+			setLocalStorage(SETTINGS_STORAGE_KEY, settings.value)
+		} else {
+			window.alert("Local storage is not available")
+		}
+
 		triggerSync()
 	})
 
