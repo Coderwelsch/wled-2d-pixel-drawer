@@ -167,7 +167,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			bri: settings.value.brightness,
 			len: settings.value.cols * settings.value.rows,
 			seg: {
-				i: generateSerpentineData(flatData, settings.value.cols, settings.value.rows),
+				i: generateSerpentineData(flatData, settings.value.rows, settings.value.cols),
 			},
 		}
 
