@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
-body {
-	@apply bg-neutral-900;
+html, body {
+	@apply bg-neutral-900 h-full;
+}
+
+#app {
+	@apply h-full;
 }

@@ -60,7 +60,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<div class="flex flex-col gap-6 p-6 md:h-auto md:overflow-y-scroll md:bg-neutral-800">
+	<div class="flex h-full flex-col gap-6 p-6 md:h-full md:overflow-y-scroll md:bg-neutral-800">
 		<div class="mx-auto flex w-full max-w-md flex-col items-center justify-center text-center">
 			<VibrantHeadline class="mx-auto -mb-4 w-full max-w-xs">PIXEL DIS/PLAY</VibrantHeadline>
 
@@ -69,17 +69,14 @@ onMounted(async () => {
 
 		<HorizontalDivider />
 
-		<p
-			v-if="ledStripStore.settings.effect === null"
-			class="sticky top-0 bg-neutral-900 py-2 text-center text-sm text-neutral-400"
-		>
+		<p v-if="ledStripStore.settings.effect === null" class="sticky top-0 py-2 text-center text-sm text-neutral-400">
 			Select an effect
 		</p>
 		<p v-else class="sticky top-0 bg-neutral-900 py-2 text-center text-sm text-neutral-400">
 			Effect: <span class="font-semibold">{{ selectedEffectName }}</span>
 		</p>
 
-		<div v-if="fetchedEffects" class="flex flex-col gap-3">
+		<div v-if="fetchedEffects?.length" class="flex flex-col gap-3">
 			<ButtonItem
 				v-for="effect in fetchedEffects"
 				:key="effect.id"
@@ -91,7 +88,13 @@ onMounted(async () => {
 				{{ effect.name }}
 			</ButtonItem>
 		</div>
-		<div v-else class="flex h-full w-full items-center justify-center text-center text-neutral-400">
+		<div
+			v-else-if="fetchedEffects?.length === 0"
+			class="flex w-full items-center justify-center text-center text-neutral-400"
+		>
+			<p class="text-sm">No effects found</p>
+		</div>
+		<div v-else class="flex w-full items-center justify-center text-center text-neutral-400">
 			<p class="text-sm">Loading effects …</p>
 
 			<svg
