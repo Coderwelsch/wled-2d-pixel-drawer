@@ -92,7 +92,9 @@ const convertedPixelData = computed(() => {
 		<HorizontalDivider class="hidden md:block" />
 
 		<div class="hidden flex-col gap-4 md:flex">
-			<UploadImageButton v-if="!DISABLE_UPLOAD_BUTTON" />
+			<template v-if="!DISABLE_UPLOAD_BUTTON">
+				<UploadImageButton />
+			</template>
 
 			<ButtonItem type="button" variant="danger" size="md" @click="ledStripStore.reset()">
 				<slot name="iconBefore">

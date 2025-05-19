@@ -5,6 +5,7 @@ import FieldSet from "@/components/FieldSet.vue"
 import HorizontalDivider from "@/components/HorizontalDivider.vue"
 import IconTrashBinSharp from "@/components/icons/IconTrashBinSharp.vue"
 import UploadImageButton from "@/components/UploadImageButton.vue"
+import { DISABLE_UPLOAD_BUTTON } from "@/lib/constants.ts"
 import { useLedStripStore } from "@/stores/led-strip.ts"
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 
@@ -271,7 +272,9 @@ onBeforeUnmount(() => {
 		<HorizontalDivider />
 
 		<div class="flex w-full flex-col justify-between gap-4 sm:flex-row sm:items-center md:hidden">
-			<UploadImageButton />
+			<template v-if="!DISABLE_UPLOAD_BUTTON">
+				<UploadImageButton />
+			</template>
 
 			<ButtonItem type="button" variant="danger" size="md" @click="ledStripStore.reset()">
 				<slot name="iconBefore">
