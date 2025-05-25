@@ -82,14 +82,29 @@ export const useLedStripStore = defineStore("led-strip", () => {
 	}
 
 	const setPixel = (x: number, y: number, color?: string) => {
-		if (!pixelData.value[y]) {
-			pixelData.value[y] = {}
+		let clampedX = x
+		let clampedY = y
+
+		if (x < 0) {
+			clampedX = 0
+		} else if (x > settings.value.cols) {
+			clampedX = settings.value.cols - 1
+		}
+
+		if (clampedY < 0) {
+			clampedY = 0
+		} else if (clampedY > settings.value.rows) {
+			clampedY = settings.value.cols - 1
+		}
+
+		if (!pixelData.value[clampedY]) {
+			pixelData.value[clampedY] = {}
 		}
 
 		const colorWithoutHash = color?.replace("#", "")
 		const drawingColorWithoutHash = settings.value.drawingColor.replace("#", "")
 
-		pixelData.value[y][x] = colorWithoutHash || drawingColorWithoutHash || "000000"
+		pixelData.value[clampedY][clampedX] = colorWithoutHash || drawingColorWithoutHash || "000000"
 
 		if (isLocalStorageAvailable()) {
 			setLocalStorage(PIXEL_DATA_STORAGE_KEY, pixelData.value)
