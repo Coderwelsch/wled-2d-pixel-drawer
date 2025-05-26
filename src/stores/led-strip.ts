@@ -207,7 +207,6 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			autoUpdaterTimeout.value = setTimeout(() => {
 				sendPixelData().catch(() => {
 					console.error("Error sending pixel data")
-					alert("Error sending pixel data")
 				})
 			}, 50) as unknown as number
 		} else {
@@ -219,9 +218,8 @@ export const useLedStripStore = defineStore("led-strip", () => {
 
 	const setEffect = async (effect: number | null) => {
 		// when effect is null, we will only update the state, not the strip
-		if (effect === null) {
+		if (effect === null && settings.value.effect !== effect) {
 			settings.value.effect = effect
-			return
 		}
 
 		// "restart" the strip to remove pixelData
@@ -259,6 +257,7 @@ export const useLedStripStore = defineStore("led-strip", () => {
 		setPixel,
 		setEffect,
 		setSerpentineMode,
+		triggerSync,
 		pixelData,
 		reset,
 	}

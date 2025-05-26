@@ -6,9 +6,10 @@ import { onMounted } from "vue"
 
 const ledStripStore = useLedStripStore()
 
-onMounted(() => {
-	ledStripStore.setEffect(null)
-	ledStripStore.setSerpentineMode(false)
+onMounted(async () => {
+	await ledStripStore.setEffect(null)
+	await ledStripStore.setSerpentineMode(false)
+	ledStripStore.triggerSync()
 })
 </script>
 
