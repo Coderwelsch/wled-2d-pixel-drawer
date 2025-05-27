@@ -5,6 +5,7 @@ import ToastPlugin from "vue-toast-notification"
 import { OhVueIcon, addIcons } from "oh-vue-icons"
 import { MdHomefilled } from "oh-vue-icons/icons"
 import { GiSpottedMushroom } from "oh-vue-icons/icons"
+import { IoSettings } from "oh-vue-icons/icons"
 
 import "./styles/global.css"
 import App from "./App.vue"
@@ -12,10 +13,12 @@ import router from "./router"
 
 const app = createApp(App)
 
-addIcons(MdHomefilled, GiSpottedMushroom)
+addIcons(MdHomefilled, GiSpottedMushroom, IoSettings)
 
 app.use(createPinia())
 app.component("v-icon", OhVueIcon)
+
+app.config.globalProperties.window = window
 
 app.use(router)
 app.use(ToastPlugin, {
