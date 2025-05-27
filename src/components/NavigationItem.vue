@@ -36,7 +36,7 @@ console.log("NavigationItem props:", props.items)
 				<v-icon
 					v-if="item.icon"
 					:name="item.icon"
-					:class="['size-3.5', isActive(item.path) ? 'fill-white' : 'fill-gray-400']"
+					:class="['size-3.5', isActive(item.path) ? 'fill-grey-200' : 'fill-gray-400']"
 				/>
 
 				{{ item.name }}
