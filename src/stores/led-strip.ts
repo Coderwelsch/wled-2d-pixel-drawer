@@ -87,13 +87,13 @@ export const useLedStripStore = defineStore("led-strip", () => {
 
 		if (x < 0) {
 			clampedX = 0
-		} else if (x > settings.value.cols) {
+		} else if (x > settings.value.cols - 1) {
 			clampedX = settings.value.cols - 1
 		}
 
 		if (clampedY < 0) {
 			clampedY = 0
-		} else if (clampedY > settings.value.rows) {
+		} else if (clampedY > settings.value.rows - 1) {
 			clampedY = settings.value.cols - 1
 		}
 
