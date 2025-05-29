@@ -12,11 +12,11 @@ This project is a git submodule of my other forked repo [WLED-With-2D-Pixel-Draw
 
 ## Features
 
-- simple canvas to draw pixel matrix
-- controls for brightness and ip / hostname of the wled device
-- frontend updates esp via wled json api
-- some features and default settings can be toggled and changed via [.env](./.env.example) variables
-- NEW: added a second view/page to select 2d wled effects
+- simple canvas to draw on pixel matrix projects
+- switch between canvas mode and 2d effects mode
+- link to original WLED settings
+- optional controls for brightness and ip / hostname of the wled device
+- features and settings can be turned off/on and can be changed via [.env](./.env.example) variables
 
 ![frontend.png](docs/frontend.png)
 
