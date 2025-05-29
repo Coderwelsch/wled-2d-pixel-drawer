@@ -34,8 +34,23 @@ export const useLedStripStore = defineStore("led-strip", () => {
 		effect: null,
 	})
 
-	const localStoragePixelData = getLocalStorage<GridPixelData>(PIXEL_DATA_STORAGE_KEY, {})
 	const settings = ref<LedStripStore>(localStorageSettings)
+
+	const generateInitialPixelData = () => {
+		const initialData: GridPixelData = {}
+
+		for (let y = 0; y < settings.value.rows; y++) {
+			initialData[y] = {}
+
+			for (let x = 0; x < settings.value.cols; x++) {
+				initialData[y][x] = "000000" // default color black
+			}
+		}
+
+		return initialData
+	}
+
+	const localStoragePixelData = getLocalStorage<GridPixelData>(PIXEL_DATA_STORAGE_KEY, generateInitialPixelData())
 	const pixelData = ref<GridPixelData>(localStoragePixelData)
 
 	const isLoading = ref(false)
