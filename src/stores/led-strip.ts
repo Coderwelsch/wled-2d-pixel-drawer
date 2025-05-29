@@ -180,11 +180,21 @@ export const useLedStripStore = defineStore("led-strip", () => {
 			return
 		}
 
-		const flatData = (
-			Object.values(pixelData.value)
-				.map((row) => Object.values(row))
-				.flat() as string[]
-		).map((color: string) => color.replace("#", ""))
+		const flatData: string[] = []
+
+		for (let y = 0; y < settings.value.rows; y++) {
+			if (!pixelData.value[y]) {
+				pixelData.value[y] = {}
+			}
+
+			for (let x = 0; x < settings.value.cols; x++) {
+				const color = pixelData.value[y][x] || "000000"
+
+				pixelData.value[y][x] = color
+
+				flatData.push(color.replace("#", ""))
+			}
+		}
 
 		const payload = {
 			on: true,
