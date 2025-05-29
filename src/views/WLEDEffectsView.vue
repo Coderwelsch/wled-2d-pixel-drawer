@@ -28,8 +28,7 @@ const fetchEffects = async (): Promise<string[]> => {
 			throw new Error("Network response was not ok")
 		}
 
-		const data = (await response.json()) as string[]
-		return data
+		return (await response.json()) as string[]
 	} catch (error) {
 		console.error("Error fetching effects:", error)
 	}
@@ -42,7 +41,9 @@ const fetchedEffects = ref<typeof WLED_EFFECTS_2D | null>(null)
 onMounted(async () => {
 	const effects = await fetchEffects()
 
-	const reducedEffects = WLED_EFFECTS_2D.reduce(
+	// filter effects based on the predefined WLED_EFFECTS_2D and IGNORED_EFFECTS_2D
+	// to ensure we only display the 2d effects
+	fetchedEffects.value = WLED_EFFECTS_2D.reduce(
 		(acc, curr) => {
 			const foundEffect = curr.id < effects.length && effects[curr.id]
 			const isIgnored = IGNORED_EFFECTS_2D.includes(curr.id)
@@ -59,8 +60,6 @@ onMounted(async () => {
 		},
 		[] as typeof WLED_EFFECTS_2D,
 	)
-
-	fetchedEffects.value = reducedEffects
 })
 </script>
 

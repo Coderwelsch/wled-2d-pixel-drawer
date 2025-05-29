@@ -1,4 +1,4 @@
-import { DISABLE_WLED_EFFECTS } from "@/lib/constants.ts"
+import { DISABLE_WLED_EFFECTS, DISABLE_WLED_SETTINGS } from "@/lib/constants.ts"
 import HomeView from "@/views/HomeView.vue"
 import WLEDEffectsView from "@/views/WLEDEffectsView.vue"
 import { createRouter, createWebHistory } from "vue-router"

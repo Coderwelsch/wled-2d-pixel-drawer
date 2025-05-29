@@ -4,6 +4,8 @@ export const DISABLE_UPLOAD_BUTTON = import.meta.env.VITE_DISABLE_UPLOAD_BUTTON 
 
 export const DISABLE_WLED_EFFECTS = import.meta.env.VITE_DISABLE_WLED_EFFECTS === "true" || false
 
+export const DISABLE_WLED_SETTINGS = import.meta.env.VITE_DISABLE_SETTINGS === "true" || false
+
 export const DISABLE_BRIGHTNESS_CHANGE = import.meta.env.VITE_DISABLE_BRIGHTNESS_CHANGE === "true" || false
 export const DEFAULT_BRIGHTNESS = import.meta.env.VITE_DEFAUT_BRIGHTNESS || 30
 
