@@ -15,5 +15,5 @@ test("navigates to effects page", async ({ page }) => {
 	await page.getByRole("button", { name: /Effects/ }).click()
 
 	await expect(page).toHaveURL("/effects")
-	await expect(page.locator("p")).toHaveText("Select an effect")
+	await expect(page.locator("p", { hasText: "Select an effect" })).toBeVisible()
 })
